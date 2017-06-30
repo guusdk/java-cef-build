@@ -5,4 +5,4 @@ script:
  - pwd
  - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
  - make -j4
-
+ - cat /home/travis/build/guusdk/java-cef-build/src/jcef_build/CMakeFiles/CMakeOutput.log
