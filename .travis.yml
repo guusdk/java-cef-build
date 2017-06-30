@@ -1,0 +1,6 @@
+language: cpp
+before_script: cd java-cef && mkdir jcef_build && cd jcef_build
+script:
+ - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+ - make -j4
+
