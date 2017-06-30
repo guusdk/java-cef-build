@@ -2,6 +2,7 @@ dist: trusty
 language: cpp
 before_script: cd src && mkdir jcef_build && cd jcef_build
 script:
+ - pwd
  - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
  - make -j4
 
