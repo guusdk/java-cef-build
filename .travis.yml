@@ -2,7 +2,7 @@ dist: trusty
 language: cpp
 before_script: cd src && mkdir jcef_build && cd jcef_build
 script:
- - pwd
- - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+ - cd ..
+ - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+ - cd jcef_build
  - make -j4
- - cat /home/travis/build/guusdk/java-cef-build/src/jcef_build/CMakeFiles/CMakeOutput.log
