@@ -6,6 +6,9 @@ matrix:
       dist: trusty
     - os: osx
 
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ant; fi
+
 before_script:
  - git clone https://bitbucket.org/chromiumembedded/java-cef.git src
  - cd src && mkdir jcef_build && cd jcef_build
