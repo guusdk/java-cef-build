@@ -1,8 +1,16 @@
-dist: trusty
 language: cpp
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+    - os: osx
+
 before_script:
  - git clone https://bitbucket.org/chromiumembedded/java-cef.git src
  - cd src && mkdir jcef_build && cd jcef_build
+
 script:
- - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+ - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. ; fi
+ - if [[ "$TRAVIS_OS_NAME" != "linux" ]]; then cmake -G "Unix Makefiles" -DPROJECT_ARCH="x86_64" -DCMAKE_BUILD_TYPE=Release .. ; fi
  - make -j4
