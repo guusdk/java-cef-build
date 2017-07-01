@@ -31,6 +31,4 @@ before_build:
   - mkdir jcef_build
   - cd jcef_build
   - cmake -G "%generatorName%" ..
-  - dir C:/Program Files/Java
-  - dir C:/Program Files (x86)/Java
 #  - type c:\projects\java-cef\src\jcef_build\jcef.sln
