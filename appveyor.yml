@@ -5,7 +5,10 @@ os: Visual Studio 2015
 clone_folder: c:\projects\java-cef
 
 platform:
-  - x86
+  - windows32
+
+configuration:
+  - Release
 
 # scripts to run before build
 before_build:
