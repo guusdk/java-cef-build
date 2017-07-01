@@ -6,7 +6,7 @@ clone_folder: c:\projects\java-cef
 
 platform:
   - win32
-  - win64
+  - x64
 
 configuration:
   - Release
@@ -18,7 +18,7 @@ environment:
 
 matrix:
   exclude:
-    - platform: win64
+    - platform: x64
       generatorName: Visual Studio 14
     - platform: win32
       generatorName: Visual Studio 14 Win64
@@ -31,4 +31,6 @@ before_build:
   - mkdir jcef_build
   - cd jcef_build
   - cmake -G "%generatorName%" ..
-  - type c:\projects\java-cef\src\jcef_build\jcef.sln
+  - dir C:/Program Files/Java
+  - dir C:/Program Files (x86)/Java
+#  - type c:\projects\java-cef\src\jcef_build\jcef.sln
