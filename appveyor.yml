@@ -4,6 +4,9 @@ os: Visual Studio 2015
 # clone directory
 clone_folder: c:\projects\java-cef
 
+platform:
+  - x86
+
 # scripts to run before build
 before_build:
   - git clone --depth=1 https://bitbucket.org/chromiumembedded/java-cef.git c:\projects\java-cef\src
