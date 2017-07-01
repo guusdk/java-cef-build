@@ -16,6 +16,13 @@ environment:
   - generatorName: Visual Studio 14
   - generatorName: Visual Studio 14 Win64
 
+matrix:
+  exclude:
+    - platform: win64
+      generatorName: Visual Studio 14
+    - platform: win32
+      generatorName: Visual Studio 14 Win64
+
 # scripts to run before build
 before_build:
   - git clone --depth=1 https://bitbucket.org/chromiumembedded/java-cef.git c:\projects\java-cef\src
