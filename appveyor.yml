@@ -2,13 +2,14 @@
 os: Visual Studio 2015
 
 # clone directory
-clone_folder: c:\projects\java-cef\src
+clone_folder: c:\projects\java-cef
 
 platform: x64
 configuration: Release
 
 # scripts to run before build
 before_build:
+  - git clone https://bitbucket.org/chromiumembedded/java-cef.git c:\projects\java-cef\src
   - echo Running cmake...
   - cd c:\projects\java-cef\src
   - mkdir jcef_build
