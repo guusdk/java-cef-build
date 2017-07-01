@@ -18,3 +18,4 @@ before_build:
   - mkdir jcef_build
   - cd jcef_build
   - cmake -G "Visual Studio 14" ..
+  - type c:\projects\java-cef\src\jcef_build\jcef.sln
