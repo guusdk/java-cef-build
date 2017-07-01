@@ -28,9 +28,13 @@ matrix:
 # scripts to run before build
 before_build:
   - setx -m JAVA_HOME "%JAVAHOME%"
+  - echo %JAVA_HOME%
+  - echo %JAVAHOME%
   - git clone --depth=1 https://bitbucket.org/chromiumembedded/java-cef.git c:\projects\java-cef\src
   - echo Running cmake...
   - cd c:\projects\java-cef\src
   - mkdir jcef_build
   - cd jcef_build
   - cmake -G "%generatorName%" ..
+  - echo %JAVA_HOME%
+  - echo %JAVAHOME%
