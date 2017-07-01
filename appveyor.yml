@@ -1,0 +1,16 @@
+# Operating system (build VM template)
+os: Visual Studio 2015
+
+# clone directory
+clone_folder: c:\projects\java-cef\src
+
+platform: x64
+configuration: Release
+
+# scripts to run before build
+before_build:
+  - echo Running cmake...
+  - cd c:\projects\java-cef\src
+  - mkdir jcef_build
+  - cd jcef_build
+  - cmake -G "Visual Studio 14" ..
