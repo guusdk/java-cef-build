@@ -6,9 +6,15 @@ clone_folder: c:\projects\java-cef
 
 platform:
   - win32
+  - win64
 
 configuration:
   - Release
+
+environment:
+  matrix:
+  - generatorName: Visual Studio 14
+  - generatorName: Visual Studio 14 Win64
 
 # scripts to run before build
 before_build:
@@ -17,5 +23,5 @@ before_build:
   - cd c:\projects\java-cef\src
   - mkdir jcef_build
   - cd jcef_build
-  - cmake -G "Visual Studio 14" ..
-#  - type c:\projects\java-cef\src\jcef_build\jcef.sln
+  - cmake -G "%generatorName%" ..
+  - type c:\projects\java-cef\src\jcef_build\jcef.sln
