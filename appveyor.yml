@@ -27,7 +27,7 @@ matrix:
 
 # scripts to run before build
 before_build:
-  - setx -m JAVA_HOME "%JAVAHOME%"
+  - set  JAVA_HOME "%JAVAHOME%"
   - echo %JAVA_HOME%
   - echo %JAVAHOME%
   - git clone --depth=1 https://bitbucket.org/chromiumembedded/java-cef.git c:\projects\java-cef\src
