@@ -37,6 +37,6 @@ before_build:
   - cmake -G "%generatorName%" ..
 
 after_build:
-  - cd c:\projects\java-cef\src\src\tools 
+  - cd c:\projects\java-cef\src\tools 
   - make_distrib.bat "%buildType%"
-  - dir c:\projects\java-cef\src\binary_distrib
+  - dir c:\projects\java-cef\src\binary_distrib\
