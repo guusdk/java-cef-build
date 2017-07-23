@@ -48,5 +48,5 @@ after_build:
   - 7z a jcef-%buildType%-distribution.zip "%buildType%"
 
 artifacts:
-  - path: jcef-%buildType%-distribution.zip
+  - path: c:\projects\java-cef\src\binary_distrib\jcef-%buildType%-distribution.zip
     name: jcef-%buildType%-distribution
