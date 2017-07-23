@@ -38,7 +38,7 @@ before_build:
   - cmake -G "%generatorName%" ..
   - echo "Building the JCEF Java classes..."
   - cd c:\projects\java-cef\src\tools
-  - compile.bat win64
+  - compile.bat "%buildType%"
 
 after_build:
   - echo "Making distribution..."
