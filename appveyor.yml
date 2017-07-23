@@ -41,9 +41,8 @@ before_build:
   - compile.bat win64
 
 after_build:
-  - cd c:\projects\java-cef\
-  - tree /f /a
   - echo "Making distribution..."
   - cd c:\projects\java-cef\src\tools\
   - make_distrib.bat "%buildType%"
+  - cd c:\projects\java-cef\src\binary_distrib
   - tree /f /a
