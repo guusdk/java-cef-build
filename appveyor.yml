@@ -45,4 +45,8 @@ after_build:
   - cd c:\projects\java-cef\src\tools\
   - make_distrib.bat "%buildType%"
   - cd c:\projects\java-cef\src\binary_distrib
-  - tree /f /a
+  - 7z a jcef-%buildType%-distribution.zip "%buildType%"
+
+artifacts:
+  - path: jcef-%buildType%-distribution.zip
+    name: jcef-%buildType%-distribution
