@@ -43,9 +43,9 @@ before_build:
 after_build:
   - echo "Making distribution..."
   - cd c:\projects\java-cef\src\tools\
-  - make_distrib.bat "%buildType%"
+  - make_distrib.bat %buildType%
   - cd c:\projects\java-cef\src\binary_distrib
-  - 7z a jcef-%buildType%-distribution.zip "%buildType%"
+  - 7z a jcef-%buildType%-distribution.zip %buildType%
 
 artifacts:
   - path: src\binary_distrib\jcef-%buildType%-distribution.zip
