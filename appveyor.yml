@@ -50,3 +50,10 @@ after_build:
 artifacts:
   - path: src\binary_distrib\jcef-%buildType%-distribution.zip
     name: jcef-%buildType%-distribution
+
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: A3RVE8hwnjT87sIRTprQ0FwoAYGd8bvXwYBUki9OmX4A37XOo7wiP2dzYZxI/LCqq1DMCKnJdNpCSaf2PnBE29HSdNC1hbS4/8u077gb2uI=
+  artifact: jcef-win32-distribution,jcef-win64-distribution
+  draft: true
