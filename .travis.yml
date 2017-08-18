@@ -15,5 +15,6 @@ before_script:
 
 script:
  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. ; fi
+ - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 .. ; fi
  - if [[ "$TRAVIS_OS_NAME" != "linux" ]]; then cmake -G "Unix Makefiles" -DPROJECT_ARCH="x86_64" -DCMAKE_BUILD_TYPE=Release .. ; fi
  - make -j4
