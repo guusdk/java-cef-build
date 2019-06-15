@@ -18,3 +18,5 @@ patch < <(cat <<'EOF'
  cd ../tools
 EOF
 ) "$1/tools/make_docs.sh"
+
+cat "$1/tools/make_docs.sh"
