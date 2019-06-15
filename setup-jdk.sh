@@ -5,6 +5,7 @@ if [ "${TRAVIS_OS_NAME}" == 'linux' ]; then
     git clone https://github.com/michaelklishin/jdk_switcher.git
     source jdk_switcher/jdk_switcher.sh
   fi
+  update-java-alternatives --list
   jdk_switcher use openjdk8
 else
   export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
