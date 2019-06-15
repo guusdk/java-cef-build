@@ -1,0 +1,66 @@
+language: java
+
+addons:
+  homebrew:
+    packages:
+      - ninja
+      - ant
+    taps: AdoptOpenJDK/openjdk
+    casks: adoptopenjdk8-openj9
+
+  apt:
+    update: true
+    sources:
+      - llvm-toolchain-xenial-8 # https://docs.travis-ci.com/user/installing-dependencies/#adding-apt-sources
+    packages:
+      - ninja-build
+      - cmake
+      - clang-8
+      - libc++-8-dev
+      - libc++abi-8-dev
+      - build-essential
+      - libgtk2.0-dev
+git:
+  depth: false
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      compiler: clang-8
+      jdk: openjdk8
+      env:
+        - ARCH_DIST=linux64
+    - os: osx
+      compiler: clang
+      env:
+        - ARCH_DIST=macosx64
+  allow_failures:
+    - os: osx
+
+# see https://github.com/travis-ci/travis-ci/issues/8408
+before_install:
+  - unset _JAVA_OPTIONS
+
+before_script:
+  - echo "ARCH_DIST=$ARCH_DIST"
+  - git clone https://github.com/chromiumembedded/java-cef.git src
+  - ./apply-patches.sh ./src
+  - source ./setup-jdk.sh
+  - echo "JAVA_HOME=$JAVA_HOME"
+  - java -version
+  - javac -version
+  - pushd ./src
+
+script:
+  - mkdir jcef_build && cd jcef_build
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == 'osx' ]]; then
+      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DPROJECT_ARCH="x86_64" ../
+    else
+      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-8 -DCMAKE_CXX_COMPILER=clang++-8 ../
+    fi
+  - ninja
+  - pushd ../tools
+  - if [[ "${TRAVIS_OS_NAME}" == 'linux' ]]; then ./compile.sh $ARCH_DIST; fi
+  - ./make_distrib.sh $ARCH_DIST
