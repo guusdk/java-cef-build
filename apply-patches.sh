@@ -1,5 +1,6 @@
 #!/bin/sh
 
-for f in $(find ./patch -type f); do
-  bash "$f" "$1"
-done
+curd=$(pwd)
+pushd $1
+git apply "$curd/patch/docs.patch"
+popd

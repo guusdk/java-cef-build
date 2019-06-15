@@ -1,24 +1,51 @@
-#!/bin/sh
-
-patch < <(cat <<'EOF'
+diff --git a/tools/make_distrib.sh b/tools/make_distrib.sh
+index abe30ed..7271153 100755
+--- a/tools/make_distrib.sh
++++ b/tools/make_distrib.sh
+@@ -13,7 +13,7 @@ else
+   export DISTRIB_BIN_PATH="$DISTRIB_PATH/bin"
+   export DISTRIB_DOCS_PATH="$DISTRIB_PATH/docs"
+   export OUT_PATH="./out"
+-  export OUT_DOCS_PATH="./out/docs"
++  export OUT_DOCS_PATH="./out/docs/*"
+   export SOURCE_PATH="./java"
+   export JOGAMP_PATH="./third_party/jogamp"
+   export TOOLS_DISTRIB_PATH="./tools/distrib/$1"
+@@ -29,6 +29,7 @@ else
+   cd ..
+ 
+   # Copy documentation to the docs directory.
++  mkdir -p $DISTRIB_DOCS_PATH
+   cp -rf $OUT_DOCS_PATH $DISTRIB_DOCS_PATH
+ 
+   # Create README.txt
+@@ -64,7 +65,7 @@ else
+       echo "ERROR: Native Release build output path does not exist"
+       exit 1
+     fi
+-  
++
+     # Create the JCEF JAR file.
+     cd tools
+     ./make_jar.sh $1
+@@ -109,4 +110,3 @@ else
+ 
+   cd tools
+ fi
+-
 diff --git a/tools/make_docs.sh b/tools/make_docs.sh
 index c6e7c44..7d42f2c 100755
 --- a/tools/make_docs.sh
 +++ b/tools/make_docs.sh
 @@ -7,6 +7,10 @@ cd ../java
-
+ 
  export OUT_PATH="../out/docs"
-
+ 
 -javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" -footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy 2013 Marshall A. Greenblatt</center>" -nodeprecated -d $OUT_PATH -link http://docs.oracle.com/javase/7/docs/api/ -subpackages org.cef
 +javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" \
 +-footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy $(date '+%Y') Marshall A. Greenblatt</center>" \
 +-nodeprecated -d $OUT_PATH -link 'https://docs.oracle.com/javase/8/docs/api/' \
 +-subpackages org.cef \
 +-classpath .:../third_party/jogamp/jar/*
-
+ 
  cd ../tools
-
-EOF
-) "$1/tools/make_docs.sh"
-
-cat "$1/tools/make_docs.sh"
