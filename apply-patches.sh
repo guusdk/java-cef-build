@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 curd=$(pwd)
 pushd $1
