@@ -1,5 +1,5 @@
 diff --git a/tools/make_distrib.sh b/tools/make_distrib.sh
-index abe30ed..ca95a8e 100755
+index abe30ed..09763d9 100755
 --- a/tools/make_distrib.sh
 +++ b/tools/make_distrib.sh
 @@ -13,7 +13,7 @@ else
@@ -17,7 +17,7 @@ index abe30ed..ca95a8e 100755
    # Copy documentation to the docs directory.
 +  mkdir -p $DISTRIB_DOCS_PATH
 +  echo "Current dir is: $(pwd)"
-+  ls -al
++  find $OUT_DOCS_PATH -maxdepth 1
    cp -rf $OUT_DOCS_PATH $DISTRIB_DOCS_PATH
  
    # Create README.txt
