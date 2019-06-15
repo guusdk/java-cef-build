@@ -1,5 +1,5 @@
 ## AppVeyor build status (Windows builds)
-### Coming soon
+### _Coming soon_
 
 ---
 
