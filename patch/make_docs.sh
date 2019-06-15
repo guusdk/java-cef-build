@@ -1,9 +1,11 @@
 #!/bin/sh
 
 patch < <(cat <<'EOF'
---- ./tools/make_docs.sh	2019-06-15 01:41:58.941455928 -0600
-+++ ./tools/make_docs.sh	2019-06-15 01:48:21.301360886 -0600
-@@ -7,6 +7,10 @@
+diff --git a/tools/make_docs.sh b/tools/make_docs.sh
+index c6e7c44..7d42f2c 100755
+--- a/tools/make_docs.sh
++++ b/tools/make_docs.sh
+@@ -7,6 +7,10 @@ cd ../java
 
  export OUT_PATH="../out/docs"
 
