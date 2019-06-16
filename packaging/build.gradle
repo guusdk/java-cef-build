@@ -8,8 +8,7 @@ def artifact=file("${System.env.BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?
 
 task jcefjars(type: Zip) {
     description = "Zips up all the jars required for jcef to run"
-    archiveBaseName = provider {'jcef-jars'}
-    destinationDir = file("$buildDir/$arch_dist")
+    archiveBaseName = provider {"jcef-jars-$arch_dist"}
 
     from (fileTree("$artifact/bin")) {
         include '**/*.jar'
@@ -24,8 +23,7 @@ task jcefjars(type: Zip) {
 
 task jcefdocs(type: Zip) {
     description = "Creates a zip of the javadocs"
-    archiveBaseName = provider {'jcef-docs'}
-    destinationDir = file("$buildDir/$arch_dist")
+    archiveBaseName = provider {"jcef-docs-$arch_dist"}
 
     from (fileTree("$artifact/docs")) {
         includeEmptyDirs = false
@@ -35,8 +33,7 @@ task jcefdocs(type: Zip) {
 task jcefblobs(type: Zip) {
     description = "Combines and zips all the blobs as dictated in the README.txt"
 
-    archiveBaseName = provider {'jcef-blobs'}
-    destinationDir = file("$buildDir/$arch_dist")
+    archiveBaseName = provider {"jcef-blobs-$arch_dist"}
 
     from (fileTree("$artifact/bin/lib/$arch_dist")) {
         include 'libjcef.so', 'jcef_helper', 'libcef.so', 'icudtl.dat',
@@ -47,9 +44,12 @@ task jcefblobs(type: Zip) {
     }
 }
 
-task jcef(dependsOn: [jcefblobs, jcefjars]) {
+task jcef {
+    dependsOn jcefblobs
+    dependsOn jcefjars
     doLast {
-        println "All jcef artifacts have been exported!!"
+        println 'All artifacts have been generated:'
+        println (dependsOn*.outputs.files.asPath.join('\n'))
     }
 }
 

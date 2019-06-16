@@ -43,33 +43,15 @@ before_install:
   - unset _JAVA_OPTIONS
 
 before_script:
-  - echo "ARCH_DIST=$ARCH_DIST"
   - git clone https://github.com/chromiumembedded/java-cef.git src
   - ./apply-patches.sh ./src
-  - source ./setup-jdk.sh
-  - echo "JAVA_HOME=$JAVA_HOME"
-  - java -version
-  - javac -version
-  - cd ./src
+  - source setup-jdk.sh
 
 script:
-  - mkdir jcef_build && cd jcef_build
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == 'osx' ]]; then
-      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DPROJECT_ARCH="x86_64" ../
-    else
-      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-8 -DCMAKE_CXX_COMPILER=clang++-8 ../
-    fi
-  - ninja
-  - cd ../tools
-  - if [[ "${TRAVIS_OS_NAME}" == 'linux' ]]; then ./compile.sh $ARCH_DIST; fi
-  - ./make_distrib.sh $ARCH_DIST
+  - ./build.sh src
 
 before_deploy:
-  - cd ../
-  - ln -s ./binary_distrib ../packaging/artifact
-  - cd ../packaging
-  - ./gradlew jcef
+  - cd packaging && ./gradlew -DBIN_ARTIFACT=../src/binary_distrib jcef
 
 deploy:
   provider: releases
@@ -77,6 +59,7 @@ deploy:
   api_key:
     secure: HAIzTDzzNT4RrN3PHZ69Rzdiqul6S+p30SvN/eKjVNmVxf6qssOjNPvL5i0v+rez2K8fAdIivY401KdOr7hNNQ66JpyomWP4AYSl3tpD9y+j8A2HhgOgyKM6s66ffRDV1R/zDrg2WPEzDvjGTaP5typayRA/2ud54oaZXfg6eZc/aeKKos0bqMXwj57MsJNvGl5PxEn+m4GCBa6j36140Ct5S19HYNjx57bFD3fQZS81ex+gkrZievSlWTTR28VbPvtOANA1MoIkyX+yIVaawfS0jr5Hv2fgqHjMu8FVSK7UBhBReil1EhNYFoCCr6UleRbOBi0hBX+wAC6u6Ni9MzaZKzt493t6OhRnmNSTxmMcWcevv37XYDoPHDgoUu/9PrUO3NOVBhj+0aqQxwYmuhA4sTwhTS9cb2riNOvIRDFxpu6UEDaW+qa+lpR6iZ8qyx3w0La1d2ZZ2kQLqQ/t8Ev0RIlx51tyA0XoDfjPttCWdK5O1+kmPQmOSMZ+8m9GDVD1zITJ3zjKX2l3Oa/uFNh1oer0o2Fr4LHgwwSZlVyHRQF3rJ2m1s1vhtEN2WJYN/IPp8M61rIJpWcQsRjWRHOd667CsbMxKHvHG4NY8GwGcb9WCswrlRFCdXTIc9laIGyigszGqIjx5s5+p1PH4MoqX5IxrLjgpX+SgHop6Uw=
   file_glob: true
-  file: build/*
+  file: build/distributions/*.zip
   on:
+    tags: true
     repo: smac89/java-cef-build

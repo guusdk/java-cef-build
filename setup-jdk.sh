@@ -9,3 +9,7 @@ if [ "${TRAVIS_OS_NAME}" == 'linux' ]; then
 else
   export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 fi
+
+echo "JAVA_HOME=$JAVA_HOME"
+java -version
+javac -version
