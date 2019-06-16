@@ -27,15 +27,10 @@ matrix:
       dist: xenial
       compiler: clang-8
       jdk: openjdk8
-      env:
-        - |
-          ARCH_DIST=linux64
-          CC=clang-8
-          CXX=clang++-8
+      env: ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8
     - os: osx
       compiler: clang
-      env:
-        - ARCH_DIST=macosx64
+      env: ARCH_DIST=macosx64
   allow_failures:
     - os: osx
 
