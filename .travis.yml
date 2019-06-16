@@ -50,7 +50,7 @@ before_script:
   - echo "JAVA_HOME=$JAVA_HOME"
   - java -version
   - javac -version
-  - pushd ./src
+  - cd ./src
 
 script:
   - mkdir jcef_build && cd jcef_build
@@ -61,6 +61,12 @@ script:
       cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-8 -DCMAKE_CXX_COMPILER=clang++-8 ../
     fi
   - ninja
-  - pushd ../tools
+  - cd ../tools
   - if [[ "${TRAVIS_OS_NAME}" == 'linux' ]]; then ./compile.sh $ARCH_DIST; fi
   - ./make_distrib.sh $ARCH_DIST
+
+before_deploy:
+  - cd ../
+  - ln -s ./binary_distrib ../packaging/artifact
+  - cd ../packaging
+  - ./gradlew jcef
