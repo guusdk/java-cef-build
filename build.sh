@@ -13,7 +13,7 @@ cd $1/jcef_build
 if [[ "${TRAVIS_OS_NAME}" == 'osx' ]]; then
   cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DPROJECT_ARCH="x86_64" ../
 else
-  cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ../
+  cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ../
 fi
 
 # build the library

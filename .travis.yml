@@ -16,8 +16,6 @@ addons:
       - ninja-build
       - cmake
       - clang-8
-      - libc++-8-dev
-      - libc++abi-8-dev
       - build-essential
       - libgtk2.0-dev
 git:
@@ -30,7 +28,10 @@ matrix:
       compiler: clang-8
       jdk: openjdk8
       env:
-        - ARCH_DIST=linux64
+        - |
+          ARCH_DIST=linux64
+          CC=clang-8
+          CXX=clang++-8
     - os: osx
       compiler: clang
       env:
