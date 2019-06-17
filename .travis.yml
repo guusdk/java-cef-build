@@ -41,7 +41,7 @@ before_install:
   - unset _JAVA_OPTIONS
 
 before_script:
-  - pyenv install 2.7.16
+  - pyenv update && pyenv install --list && pyenv install 2.7.16
   - git clone https://github.com/chromiumembedded/java-cef.git src
   - ./apply-patches.sh ./src
   - source setup-jdk.sh
