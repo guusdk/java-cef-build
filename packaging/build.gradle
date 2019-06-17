@@ -1,60 +1,75 @@
+import org.gradle.crypto.checksum.Checksum
+
+plugins {
+    id 'distribution'
+    id "org.gradle.crypto.checksum" version "1.2.0"
+}
+
 // Checks in order: the environment, or a system property
 def arch_dist="${System.env.ARCH_DIST ?: System.properties.ARCH_DIST}"
 def artifact=file("${System.env.BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?: "$bin_artifact"}/$arch_dist")
 
-task jcefjars(type: Zip) {
-    description = "Zips up all the jars required for jcef to run"
-    archiveFileName = provider {"jcef-jars-${arch_dist}.zip"}
-
-    from (fileTree("$artifact/bin")) {
-        include '**/*.jar'
-        exclude '**/jcef-tests.jar'
-        eachFile {
-            relativePath new RelativePath(true, name)
+distributions {
+    // Combines all the jars required for jcef to run
+    jars {
+        contents {
+            from (fileTree("$artifact/bin")) {
+                include '**/*.jar'
+                exclude '**/jcef-tests.jar'
+                eachFile {
+                    relativePath new RelativePath(true, name)
+                }
+                caseSensitive = false
+                includeEmptyDirs = false
+            }
         }
-        caseSensitive = false
-        includeEmptyDirs = false
     }
-}
 
-task jcefdocs(type: Zip) {
-    description = "Creates a zip of the javadocs"
-    archiveFileName = provider {"jcef-docs-${arch_dist}.zip"}
-
-    from (fileTree("$artifact/docs")) {
-        includeEmptyDirs = false
+    // Creates a collection of the javadocs
+    docs {
+        contents {
+            from (fileTree("$artifact/docs")) {
+                includeEmptyDirs = false
+            }
+        }
     }
-}
 
-task jcefblobs(type: Zip) {
-    description = "Combines and zips all the blobs as dictated in the README.txt"
-
-    archiveFileName = provider {"jcef-blobs-${arch_dist}.zip"}
-
-    from (fileTree("$artifact/bin/lib/$arch_dist")) {
-        include 'libjcef.so', 'jcef_helper', 'libcef.so', 'icudtl.dat',
-                'natives_blob.bin', 'snapshot_blob.bin'
-        include 'locales/**/*'
-        include 'cef*.pak'
-        include 'devtools_resources.pak'
+    // Combines all the blobs as dictated in the README.txt
+    blobs {
+        contents {
+            from (fileTree("$artifact/bin/lib/$arch_dist")) {
+                include 'libjcef.so', 'jcef_helper', 'libcef.so', 'icudtl.dat',
+                        'natives_blob.bin', 'snapshot_blob.bin'
+                include 'locales/**/*'
+                include 'cef*.pak'
+                include 'devtools_resources.pak'
+            }
+        }
     }
-}
-
-// Configure all the tasks to deposit their content in
-// the given folder
-[jcefjars, jcefdocs, jcefblobs]*.configure {
-    destinationDirectory = file("$buildDir/distributions")
 }
 
 // Main task to run everything
-task jcef {
-    dependsOn jcefblobs
-    dependsOn jcefjars
-    doLast {
-        println 'All artifacts have been generated:'
-        println (dependsOn*.outputs.files.asPath.join('\n'))
+task jcef(type: Zip) {
+    dependsOn installBlobsDist
+    dependsOn installJarsDist
+
+    archiveBaseName = provider { "$arch_dist" }
+
+    (dependsOn*.destinationDir).each { dest ->
+        into (dest.name) {
+            from(dest)
+        }
     }
 }
+
+// Generate sha256 checksum of the output files
+task jcefchecksum(type: Checksum) {
+    dependsOn jcef
+    files = jcef.outputs.files
+    outputDir = file("$buildDir/distributions")
+}
+
+jcef.finalizedBy jcefchecksum
 
 wrapper {
     distributionType = Wrapper.DistributionType.BIN

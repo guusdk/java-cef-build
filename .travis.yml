@@ -22,6 +22,7 @@ git:
   depth: false
 
 matrix:
+  fast_finish: true
   include:
     - os: linux
       dist: xenial
@@ -46,8 +47,11 @@ before_script:
 script:
   - ./build.sh src
 
+# after_success:
+#   - export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"(.+)"\s*\)/i && print "jcef-$1"' src/CMakeLists.txt)
+
 before_deploy:
-  - cd packaging && ./gradlew -DBIN_ARTIFACT=../src/binary_distrib jcef
+  - ./packaging/gradlew --project-dir=packaging -DBIN_ARTIFACT=./src/binary_distrib jcef
 
 deploy:
   provider: releases

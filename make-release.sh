@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# $1 is the directory for jcef sources
+export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"(.+)"\s*\)/i && print "jcef-$1"' "$1/CMakeLists.txt")
+
+if [[ -z $VERSION ]]; then
+  echo "Failed to retrieve cef version"
+  exit 1
+fi
+
+git tag --annotate "$CEF_VERSION" --file <(cat << 'EOF'
+##Release Notes
+- Builds for linux and mac are working
+- Deploy for linux working as well
+EOF
+)
+
+git push origin "$CEF_VERSION"
