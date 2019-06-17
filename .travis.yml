@@ -5,6 +5,7 @@ addons:
     packages:
       - ninja
       - ant
+      - pyenv
     taps: AdoptOpenJDK/openjdk
     casks: adoptopenjdk8-openj9
 
@@ -20,8 +21,6 @@ addons:
       - libgtk2.0-dev
 git:
   depth: false
-
-python: 2.7
 
 matrix:
   fast_finish: true
@@ -42,6 +41,7 @@ before_install:
   - unset _JAVA_OPTIONS
 
 before_script:
+  - pyenv install 2.7.16
   - git clone https://github.com/chromiumembedded/java-cef.git src
   - ./apply-patches.sh ./src
   - source setup-jdk.sh
