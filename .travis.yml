@@ -44,7 +44,6 @@ before_script:
   - git clone https://github.com/chromiumembedded/java-cef.git src
   - ./apply-patches.sh ./src
   - source setup-jdk.sh
-  - source setup-pyenv.sh
 
 script:
   - ./build.sh src
