@@ -7,8 +7,7 @@ plugins {
 
 // Checks in order: the environment, or a system property
 def arch_dist="${System.env.ARCH_DIST ?: System.properties.ARCH_DIST}"
-// The artifact location is resolved relative to the user's current working directory
-def artifact=file("${System.properties['user.dir']}/${System.env.BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?: "$bin_artifact"}/$arch_dist")
+def artifact=file("${System.env.BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?: "$bin_artifact"}/$arch_dist")
 
 distributions {
     // Combines all the jars required for jcef to run

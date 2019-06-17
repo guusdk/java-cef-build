@@ -48,7 +48,7 @@ script:
   - ./build.sh src
 
 before_deploy:
-  - ./packaging/gradlew --project-dir=./packaging -DBIN_ARTIFACT=./src/binary_distrib --info jcef
+  - cd ./packaging && ./gradlew -DBIN_ARTIFACT=../src/binary_distrib --info jcef
 
 deploy:
   provider: releases
