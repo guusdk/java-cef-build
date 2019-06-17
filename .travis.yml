@@ -21,6 +21,8 @@ addons:
 git:
   depth: false
 
+python: 2.7
+
 matrix:
   fast_finish: true
   include:
