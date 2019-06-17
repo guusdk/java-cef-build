@@ -8,11 +8,14 @@ if [ -z $CEF_VERSION ]; then
   exit 1
 fi
 
-git tag --annotate "$CEF_VERSION" --file <(cat << 'EOF'
-- Builds for linux and mac are working
-- Deploy for linux working as well
-EOF
-)
+echo "CEF_VERSION=$CEF_VERSION"
+
+# git tag --annotate "$CEF_VERSION" --file <(cat << 'EOF'
+#
+# - Builds for linux and mac are working
+# - Deploy for linux working as well
+# EOF
+# )
 
 # git tag --delete "$CEF_VERSION"
 # git push origin --delete "$CEF_VERSION"
