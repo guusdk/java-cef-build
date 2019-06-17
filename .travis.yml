@@ -47,11 +47,8 @@ before_script:
 script:
   - ./build.sh src
 
-# after_success:
-#   - export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"(.+)"\s*\)/i && print "jcef-$1"' src/CMakeLists.txt)
-
 before_deploy:
-  - ./packaging/gradlew --project-dir=packaging -DBIN_ARTIFACT=./src/binary_distrib jcef
+  - ./packaging/gradlew --project-dir=./packaging -DBIN_ARTIFACT=./src/binary_distrib --info jcef
 
 deploy:
   provider: releases
