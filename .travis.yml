@@ -1,0 +1,64 @@
+language: java
+
+addons:
+  homebrew:
+    packages:
+      - ninja
+      - ant
+      - pyenv
+    taps: AdoptOpenJDK/openjdk
+    casks: adoptopenjdk8-openj9
+
+  apt:
+    update: true
+    sources:
+      - llvm-toolchain-xenial-8 # https://docs.travis-ci.com/user/installing-dependencies/#adding-apt-sources
+    packages:
+      - ninja-build
+      - cmake
+      - clang-8
+      - build-essential
+      - libgtk2.0-dev
+git:
+  depth: false
+
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      dist: xenial
+      compiler: clang-8
+      jdk: openjdk8
+      env: ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8
+    - os: osx
+      compiler: clang
+      env: ARCH_DIST=macosx64
+  allow_failures:
+    - os: osx
+
+# see https://github.com/travis-ci/travis-ci/issues/8408
+before_install:
+  - unset _JAVA_OPTIONS
+
+before_script:
+  - pyenv root && pyenv update && pyenv install --list && pyenv install 2.7.16
+  - git clone https://github.com/chromiumembedded/java-cef.git src
+  - ./apply-patches.sh ./src
+  - source setup-jdk.sh
+
+script:
+  - ./build.sh src
+
+before_deploy:
+  - cd ./packaging && ./gradlew -DBIN_ARTIFACT=../src/binary_distrib --info jcef
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: aJtl2yxi7J4jvkX6Iljtbq+NXewxrX9bUPtgqMFPYTYDvV2V859OiCxNrUDQUq8UjxCpJOb9pw3ohHGZH81iBAG+cHPM2Ss2ryKOl3TZjUX3/eQ7M84w2EUzTjbOXRBF/UY8IBVcIco/pIm3jvEHfUSGC0HNAo+s6iOVZSd4dNQO6ioL8AqFgK8JFpmy7WbWW0So2XJFSCzKfYPb5A8gf/KYujxiKITH0Rw/CTO4yJR9eIIJE5GcT8JQ5K8KQtAtdZZUDHrjeWMsMAbv5ldNZWl0o47+rOAPjNR36JW/dYxfh3AwzTHMhlPI+yZT1bLVFVtjX2FIowg2Umf6dqZ4/Z2Ehe2p8yipXq8JFKgwKBxtNRMCHoVgoIZ5C9/Sr1W46ix8Khw5eGNNrlAD3ywjzJa8LBwcM5BdDFc7InOMcjePGu1seTgb32+9vzAYkwdVp6Uh9DadzjvwSkWSWW7d4OHrnKFuO333BUo/tsksO4RjXd4skJ03TjeJ+zGVYQ+2HcOtHkUiCoyfe4Shk59yp3Gl/LV7kPO9tVZTXJT3Ul6wfj4PjR3/IY7YYCWloq11AJ2n/Q7c44BTlMBPyGgALKiAyKhm9tonTx5s8y/PxK2vPVRo4R2CD1p4ceJXCraFTpiIiL4rDCe8yu6DM2EkbankAS1IXiK5RetysVoTrA4=
+  file_glob: true
+  file: build/distributions/*.zip
+  on:
+    tags: true
+    repo: smac89/java-cef-build
