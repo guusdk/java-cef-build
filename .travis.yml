@@ -31,6 +31,7 @@ matrix:
       jdk: openjdk8
       env: ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8
     - os: osx
+      osx_image: xcode10.2
       compiler: clang
       env: ARCH_DIST=macosx64
   allow_failures:

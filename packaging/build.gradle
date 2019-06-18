@@ -37,12 +37,18 @@ distributions {
     // Combines all the blobs as dictated in the README.txt
     blobs {
         contents {
-            from (fileTree("$artifact/bin/lib/$arch_dist")) {
-                include 'libjcef.so', 'jcef_helper', 'libcef.so', 'icudtl.dat',
-                        'natives_blob.bin', 'snapshot_blob.bin'
-                include 'locales/**/*'
-                include 'cef*.pak'
-                include 'devtools_resources.pak'
+            if ("linux" in arch_dist) {
+                from (fileTree("$artifact/bin/lib/$arch_dist")) {
+                    include 'libjcef.so', 'jcef_helper', 'libcef.so', 'icudtl.dat',
+                            'natives_blob.bin', 'snapshot_blob.bin'
+                    include 'locales/**/*'
+                    include 'cef*.pak'
+                    include 'devtools_resources.pak'
+                }
+            } else if ("macosx" in arch_dist) {
+                from (fileTree("$artifact/bin/")) {
+                    exclude '**/*.jar'
+                }
             }
         }
     }
