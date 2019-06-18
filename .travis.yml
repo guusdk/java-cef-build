@@ -52,6 +52,7 @@ script:
 before_deploy:
   - cd ./packaging && ./gradlew -DBIN_ARTIFACT=../src/binary_distrib --info jcef
 
+# for encryption, see https://docs.travis-ci.com/user/encryption-keys/
 deploy:
   provider: releases
   skip_cleanup: true
