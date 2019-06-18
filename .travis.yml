@@ -29,7 +29,7 @@ matrix:
       dist: xenial
       compiler: clang-8
       jdk: openjdk8
-      env: ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8
+      env: ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8 PAGES_DEPLOY=true
     - os: osx
       osx_image: xcode10.2
       compiler: clang
@@ -50,16 +50,27 @@ script:
   - ./build.sh src
 
 before_deploy:
-  - cd ./packaging && ./gradlew -DBIN_ARTIFACT=../src/binary_distrib --info jcef
+  - cd ./packaging && source ./setup-deploy.sh ../src/binary_distrib
 
 # for encryption, see https://docs.travis-ci.com/user/encryption-keys/
 deploy:
-  provider: releases
-  skip_cleanup: true
-  api_key:
-    secure: aJtl2yxi7J4jvkX6Iljtbq+NXewxrX9bUPtgqMFPYTYDvV2V859OiCxNrUDQUq8UjxCpJOb9pw3ohHGZH81iBAG+cHPM2Ss2ryKOl3TZjUX3/eQ7M84w2EUzTjbOXRBF/UY8IBVcIco/pIm3jvEHfUSGC0HNAo+s6iOVZSd4dNQO6ioL8AqFgK8JFpmy7WbWW0So2XJFSCzKfYPb5A8gf/KYujxiKITH0Rw/CTO4yJR9eIIJE5GcT8JQ5K8KQtAtdZZUDHrjeWMsMAbv5ldNZWl0o47+rOAPjNR36JW/dYxfh3AwzTHMhlPI+yZT1bLVFVtjX2FIowg2Umf6dqZ4/Z2Ehe2p8yipXq8JFKgwKBxtNRMCHoVgoIZ5C9/Sr1W46ix8Khw5eGNNrlAD3ywjzJa8LBwcM5BdDFc7InOMcjePGu1seTgb32+9vzAYkwdVp6Uh9DadzjvwSkWSWW7d4OHrnKFuO333BUo/tsksO4RjXd4skJ03TjeJ+zGVYQ+2HcOtHkUiCoyfe4Shk59yp3Gl/LV7kPO9tVZTXJT3Ul6wfj4PjR3/IY7YYCWloq11AJ2n/Q7c44BTlMBPyGgALKiAyKhm9tonTx5s8y/PxK2vPVRo4R2CD1p4ceJXCraFTpiIiL4rDCe8yu6DM2EkbankAS1IXiK5RetysVoTrA4=
-  file_glob: true
-  file: build/distributions/*
-  on:
-    tags: true
-    repo: smac89/java-cef-build
+  - provider: releases
+    skip_cleanup: true
+    api_key:
+      secure: aJtl2yxi7J4jvkX6Iljtbq+NXewxrX9bUPtgqMFPYTYDvV2V859OiCxNrUDQUq8UjxCpJOb9pw3ohHGZH81iBAG+cHPM2Ss2ryKOl3TZjUX3/eQ7M84w2EUzTjbOXRBF/UY8IBVcIco/pIm3jvEHfUSGC0HNAo+s6iOVZSd4dNQO6ioL8AqFgK8JFpmy7WbWW0So2XJFSCzKfYPb5A8gf/KYujxiKITH0Rw/CTO4yJR9eIIJE5GcT8JQ5K8KQtAtdZZUDHrjeWMsMAbv5ldNZWl0o47+rOAPjNR36JW/dYxfh3AwzTHMhlPI+yZT1bLVFVtjX2FIowg2Umf6dqZ4/Z2Ehe2p8yipXq8JFKgwKBxtNRMCHoVgoIZ5C9/Sr1W46ix8Khw5eGNNrlAD3ywjzJa8LBwcM5BdDFc7InOMcjePGu1seTgb32+9vzAYkwdVp6Uh9DadzjvwSkWSWW7d4OHrnKFuO333BUo/tsksO4RjXd4skJ03TjeJ+zGVYQ+2HcOtHkUiCoyfe4Shk59yp3Gl/LV7kPO9tVZTXJT3Ul6wfj4PjR3/IY7YYCWloq11AJ2n/Q7c44BTlMBPyGgALKiAyKhm9tonTx5s8y/PxK2vPVRo4R2CD1p4ceJXCraFTpiIiL4rDCe8yu6DM2EkbankAS1IXiK5RetysVoTrA4=
+    file_glob: true
+    file: build/distributions/*
+    on:
+      tags: true
+      repo: smac89/java-cef-build
+  - provider: pages
+    skip_cleanup: true
+    keep_history: true
+    committer_from_gh: true
+    github_token:
+      secure: aJtl2yxi7J4jvkX6Iljtbq+NXewxrX9bUPtgqMFPYTYDvV2V859OiCxNrUDQUq8UjxCpJOb9pw3ohHGZH81iBAG+cHPM2Ss2ryKOl3TZjUX3/eQ7M84w2EUzTjbOXRBF/UY8IBVcIco/pIm3jvEHfUSGC0HNAo+s6iOVZSd4dNQO6ioL8AqFgK8JFpmy7WbWW0So2XJFSCzKfYPb5A8gf/KYujxiKITH0Rw/CTO4yJR9eIIJE5GcT8JQ5K8KQtAtdZZUDHrjeWMsMAbv5ldNZWl0o47+rOAPjNR36JW/dYxfh3AwzTHMhlPI+yZT1bLVFVtjX2FIowg2Umf6dqZ4/Z2Ehe2p8yipXq8JFKgwKBxtNRMCHoVgoIZ5C9/Sr1W46ix8Khw5eGNNrlAD3ywjzJa8LBwcM5BdDFc7InOMcjePGu1seTgb32+9vzAYkwdVp6Uh9DadzjvwSkWSWW7d4OHrnKFuO333BUo/tsksO4RjXd4skJ03TjeJ+zGVYQ+2HcOtHkUiCoyfe4Shk59yp3Gl/LV7kPO9tVZTXJT3Ul6wfj4PjR3/IY7YYCWloq11AJ2n/Q7c44BTlMBPyGgALKiAyKhm9tonTx5s8y/PxK2vPVRo4R2CD1p4ceJXCraFTpiIiL4rDCe8yu6DM2EkbankAS1IXiK5RetysVoTrA4=
+    local_dir: build/install/java-cef-build-docs
+    on:
+      tags: true
+      repo: smac89/java-cef-build
+      condition: $PAGES_DEPLOY

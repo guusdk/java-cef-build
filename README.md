@@ -10,7 +10,7 @@
 
 [![Latest Release](https://img.shields.io/github/release/smac89/java-cef-build.svg?color=black&label=Latest%20Release&logoColor=white&style=for-the-badge)](https://github.com/smac89/java-cef-build/releases)
 
-<small>Badges generated with https://shields.io </small>
+<small>Badges generated with https://shields.io</small>
 </div>
 
 ---
