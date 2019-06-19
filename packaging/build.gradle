@@ -22,6 +22,13 @@ distributions {
                 caseSensitive = false
                 includeEmptyDirs = false
             }
+
+            into('readme') {
+                from(artifact) {
+                    include '*LICENSE.txt'
+                    include 'README.txt'
+                }
+            }
         }
     }
 
