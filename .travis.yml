@@ -30,11 +30,8 @@ matrix:
       compiler: clang-8
       jdk: openjdk8
       env:
-        global:
-          - CC=clang-8
-          - CXX=clang++-8
-        - ARCH_DIST=linux64
-        - ARCH_DIST=linux32
+        - ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8
+        - ARCH_DIST=linux32 CC=clang-8 CXX=clang++-8
     - os: osx
       osx_image: xcode10.2
       compiler: clang
