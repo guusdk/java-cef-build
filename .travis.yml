@@ -56,6 +56,9 @@ script:
 before_deploy:
   - cd ./packaging && source ../setup-deploy.sh ../src/binary_distrib
 
+after_deploy:
+  - cd ../
+
 # for encryption, see https://docs.travis-ci.com/user/encryption-keys/
 deploy:
   - provider: releases
