@@ -1,7 +1,7 @@
 # Build the jars and native libraries
 ./gradlew -DBIN_ARTIFACT="$1" --info jcef
 
-# Only build the pages if PAGES_DEPLOY is set to true
-if [[ ! -z $PAGES_DEPLOY && $PAGES_DEPLOY == true ]]; then
+# Only build the pages if this is linux64
+if [[ $ARCH_DIST == 'linux64' ]]; then
   ./gradlew -DBIN_ARTIFACT="$1" --info installDocsDist
 fi

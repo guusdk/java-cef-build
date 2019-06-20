@@ -29,13 +29,21 @@ matrix:
       dist: xenial
       compiler: clang-8
       jdk: openjdk8
-      env: ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8 PAGES_DEPLOY=true
+      env:
+        global:
+          - CC=clang-8
+          - CXX=clang++-8
+        - ARCH_DIST=linux64
+        - ARCH_DIST=linux32
     - os: osx
       osx_image: xcode10.2
       compiler: clang
       env: ARCH_DIST=macosx64
   allow_failures:
     - os: osx
+  exclude:
+    - os: linux
+      env: ARCH_DIST=linux32 # Either travis allows 32bit builds or use docker. See https://github.com/travis-ci/travis-ci/issues/5770
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
@@ -56,8 +64,7 @@ before_deploy:
 deploy:
   - provider: releases
     skip_cleanup: true
-    api_key:
-      secure: aJtl2yxi7J4jvkX6Iljtbq+NXewxrX9bUPtgqMFPYTYDvV2V859OiCxNrUDQUq8UjxCpJOb9pw3ohHGZH81iBAG+cHPM2Ss2ryKOl3TZjUX3/eQ7M84w2EUzTjbOXRBF/UY8IBVcIco/pIm3jvEHfUSGC0HNAo+s6iOVZSd4dNQO6ioL8AqFgK8JFpmy7WbWW0So2XJFSCzKfYPb5A8gf/KYujxiKITH0Rw/CTO4yJR9eIIJE5GcT8JQ5K8KQtAtdZZUDHrjeWMsMAbv5ldNZWl0o47+rOAPjNR36JW/dYxfh3AwzTHMhlPI+yZT1bLVFVtjX2FIowg2Umf6dqZ4/Z2Ehe2p8yipXq8JFKgwKBxtNRMCHoVgoIZ5C9/Sr1W46ix8Khw5eGNNrlAD3ywjzJa8LBwcM5BdDFc7InOMcjePGu1seTgb32+9vzAYkwdVp6Uh9DadzjvwSkWSWW7d4OHrnKFuO333BUo/tsksO4RjXd4skJ03TjeJ+zGVYQ+2HcOtHkUiCoyfe4Shk59yp3Gl/LV7kPO9tVZTXJT3Ul6wfj4PjR3/IY7YYCWloq11AJ2n/Q7c44BTlMBPyGgALKiAyKhm9tonTx5s8y/PxK2vPVRo4R2CD1p4ceJXCraFTpiIiL4rDCe8yu6DM2EkbankAS1IXiK5RetysVoTrA4=
+    api_key: $GITHUB_RELEASE_TOKEN_PRIVATE
     file_glob: true
     file: build/distributions/*
     on:
@@ -67,10 +74,13 @@ deploy:
     skip_cleanup: true
     keep_history: true
     committer_from_gh: true
-    github_token:
-      secure: aJtl2yxi7J4jvkX6Iljtbq+NXewxrX9bUPtgqMFPYTYDvV2V859OiCxNrUDQUq8UjxCpJOb9pw3ohHGZH81iBAG+cHPM2Ss2ryKOl3TZjUX3/eQ7M84w2EUzTjbOXRBF/UY8IBVcIco/pIm3jvEHfUSGC0HNAo+s6iOVZSd4dNQO6ioL8AqFgK8JFpmy7WbWW0So2XJFSCzKfYPb5A8gf/KYujxiKITH0Rw/CTO4yJR9eIIJE5GcT8JQ5K8KQtAtdZZUDHrjeWMsMAbv5ldNZWl0o47+rOAPjNR36JW/dYxfh3AwzTHMhlPI+yZT1bLVFVtjX2FIowg2Umf6dqZ4/Z2Ehe2p8yipXq8JFKgwKBxtNRMCHoVgoIZ5C9/Sr1W46ix8Khw5eGNNrlAD3ywjzJa8LBwcM5BdDFc7InOMcjePGu1seTgb32+9vzAYkwdVp6Uh9DadzjvwSkWSWW7d4OHrnKFuO333BUo/tsksO4RjXd4skJ03TjeJ+zGVYQ+2HcOtHkUiCoyfe4Shk59yp3Gl/LV7kPO9tVZTXJT3Ul6wfj4PjR3/IY7YYCWloq11AJ2n/Q7c44BTlMBPyGgALKiAyKhm9tonTx5s8y/PxK2vPVRo4R2CD1p4ceJXCraFTpiIiL4rDCe8yu6DM2EkbankAS1IXiK5RetysVoTrA4=
+    github_token: $GITHUB_TOKEN_PRIVATE
     local_dir: build/install/java-cef-build-docs
     on:
       tags: true
       repo: smac89/java-cef-build
-      condition: $PAGES_DEPLOY
+      condition: $ARCH_DIST == 'linux64'
+
+env:
+  global:
+    - secure: "WRaDo3ndQOR5ATmjE9+EDlYnIsanPB6ItvaRbahMt2WlzLYKIBMY+ASmNVoAABykOpBkoNeKS4cIEnNueCxHU0LNfZyMvTDkuRm0s0wovyKXaEwAgRgnP6xCmnZ6V8VjTWNSl43tTcF++5S3Yx+lJdLzKWx2v/hbN1/Vb7LK6guLGLvyKlg2n2N76v/3rK2C9w5haMIrDAqCPHNnxpVYPxR2Rzqs0OmkH3GFu7YUVdfQ48RWdivKIu8NPUzDZMI3IvwFm/Ba6Sdk8y0i/z21IlBMbPQwN2vQzM9kelvO3+ZLx46DaO2s1oGXvz7T2YDzsZxQz97PMms7DyMo4t6ejF9C6feQutCOuybOAWEPkxSVXQe9XvP4jQbn1JVfjK2evqFUU3OWIxiwJJYbT/QZ7Pdmp/4GqknPzCtHihE2pawzQn/B3B9mksz6/c28UoeWy2XFQ3RnipLDTBvaJo7NQm6RngbrWhFSQRHFVQqqzw3jR4LvJFX8L6+R5bueJiXExE408hu2UUXmxskQJAWmDaFsiB2QZLaILFXx9l/bUhi5pQGL4t2jp+fVSE8u3fwev16cH0kMpnr0JhN4/hA9Cviq+V8yfVs0bbjke6dCAIMxEUOl8OolJ/N2am4sekLSwITy4QUaaS4BEqkuqLne+rAEDtKER5rR6H3BhrQzDk4="

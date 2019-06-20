@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # This is to ensure we are using the latest jdk-8
 if [ "${TRAVIS_OS_NAME}" == 'linux' ]; then
   if ! command -v jdk_switcher; then

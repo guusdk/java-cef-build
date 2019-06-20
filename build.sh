@@ -22,7 +22,9 @@ ninja
 cd ../tools
 
 # Compile the java source on Linux
-if [[ "${TRAVIS_OS_NAME}" == 'linux' ]]; then ./compile.sh $ARCH_DIST; fi
+if [[ "${TRAVIS_OS_NAME}" == 'linux' ]]; then
+  ./compile.sh $ARCH_DIST
+fi
 
 # Generate docs, copy libraries and jars to binary_distrib folder, etc
 ./make_distrib.sh $ARCH_DIST
