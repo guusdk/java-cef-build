@@ -30,17 +30,16 @@ matrix:
       compiler: clang-8
       jdk: openjdk8
       env:
-        - ARCH_DIST=linux64 CC=clang-8 CXX=clang++-8
-        - ARCH_DIST=linux32 CC=clang-8 CXX=clang++-8
+        - ARCH_DIST=linux64
+        - CC=clang-8
+        - CXX=clang++-8
     - os: osx
       osx_image: xcode10.2
       compiler: clang
       env: ARCH_DIST=macosx64
-  allow_failures:
-    - os: osx
-  exclude:
-    - os: linux
-      env: ARCH_DIST=linux32 # Either travis allows 32bit builds or use docker. See https://github.com/travis-ci/travis-ci/issues/5770
+  # allow_failures:
+  #   - os: linux
+  #     env: ARCH_DIST=linux32 # Either travis allows 32bit builds or use docker. See https://github.com/travis-ci/travis-ci/issues/5770
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
