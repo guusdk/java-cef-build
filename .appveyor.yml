@@ -31,6 +31,8 @@ matrix:
 # https://www.appveyor.com/docs/environment-variables/
 before_build:
 - pwsh: >-
+    Write-Host "Platform: $Env:PLATFORM, ARCH_DIST: $Env:ARCH_DIST"
+
     git clone -q https://github.com/chromiumembedded/java-cef.git "$Env:APPVEYOR_BUILD_FOLDER/src"
 
     cd $Env:APPVEYOR_BUILD_FOLDER/src
