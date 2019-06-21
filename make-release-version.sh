@@ -1,7 +1,14 @@
 #!/bin/bash
 
 # $1 is the directory for jcef sources
-export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"(.+)"\s*\)/i && print "vJcef-$1"' "$1/CMakeLists.txt")
+pushd $1 2>&1 > /dev/null
+git stash 2>&1 > /dev/null
+git pull
+popd 2>&1 > /dev/null
+export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"(.+)"\s*\)/i && print "$1"' "$1/CMakeLists.txt")
+pushd $1 2>&1 > /dev/null
+git stash pop 2>&1 > /dev/null
+popd 2>&1 > /dev/null
 
 if [ -z $CEF_VERSION ]; then
   echo "Failed to retrieve cef version"
