@@ -8,19 +8,15 @@ max_jobs: 2
 image: Visual Studio 2015
 configuration: Release
 
-platform:
-  - x64
-  - x86
-
 clone_depth: 1
 clone_folder: c:\%APPVEYOR_PROJECT_NAME%\
 
 environment:
   matrix:
   - platform: x86
-    ARCH_DIST: win64
-  - platform: x64
     ARCH_DIST: win32
+  - platform: x64
+    ARCH_DIST: win64
 
 matrix:
   fast_finish: true
