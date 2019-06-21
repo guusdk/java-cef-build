@@ -25,8 +25,7 @@ distributions {
 
             into('readme') {
                 from(artifact) {
-                    include '*LICENSE.txt'
-                    include 'README.txt'
+                    include '*.txt'
                 }
             }
         }
@@ -44,9 +43,9 @@ distributions {
     // Combines all the blobs as dictated in the README.txt
     blobs {
         contents {
-            if (arch_dist.contains("linux")) {
+            if (!arch_dist.contains("macosx")) {
                 from (fileTree("$artifact/bin/lib/$arch_dist"))
-            } else if (arch_dist.contains("macosx")) {
+            } else {
                 from (fileTree("$artifact/bin/")) {
                     exclude '**/*.jar'
                 }

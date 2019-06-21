@@ -1,53 +1,69 @@
-# Operating system (build VM template)
-os: Visual Studio 2015
+version: build-{build}
 
-# clone directory
-clone_folder: c:\projects\java-cef
+branches:
+  only:
+  - master
+
+max_jobs: 2
+image: Visual Studio 2015
+configuration: Release
 
 platform:
-  - win32
   - x64
-
-configuration:
-  - Release
+  - x86
+clone_depth: 1
+clone_folder: c:\%APPVEYOR_PROJECT_NAME%\
 
 environment:
   matrix:
-  - buildType: win32
-    generatorName: Visual Studio 14
-    JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
-  - buildType: win64
-    generatorName: Visual Studio 14 Win64
-    JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+  - ARCH_DIST: win64
+  - ARCH_DIST: win32
 
 matrix:
   exclude:
+    - platform: x86
+      ARCH_DIST: win64
     - platform: x64
-      buildType: win32
-    - platform: win32
-      buildType: win64
+      ARCH_DIST: win32
 
 before_build:
-  - SET PATH=%JAVA_HOME%;%PATH%
-  #- git clone --depth=1 https://bitbucket.org/chromiumembedded/java-cef.git c:\projects\java-cef\src
-  - git clone --depth=1 https://bitbucket.org/guusdk/java-cef.git c:\projects\java-cef\src
-  - echo "Running cmake..."
-  - cd c:\projects\java-cef\src
-  - mkdir jcef_build
-  - cd jcef_build
-  - cmake -G "%generatorName%" ..
-  - echo "Building the JCEF Java classes..."
-  - cd c:\projects\java-cef\src\tools
-  - compile.bat %buildType%
+- pwsh: >-
+    # https://www.appveyor.com/docs/environment-variables/
+    git clone -q https://github.com/chromiumembedded/java-cef.git "$Env:APPVEYOR_BUILD_FOLDER/src"
+    cd $Env:APPVEYOR_BUILD_FOLDER/src
+    mkdir "./jcef_build"
+    cd "./jcef_build"
+    if ($Env:PLATFORM -eq 'x86') {
+      cmake -G "Visual Studio 14 2015" ../ 3>&1
+    } else {
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release ../ 3>&1
+    }
+
+build:
+  project: .\src\jcef_build\jcef.sln
+  parallel: true
+  verbosity: detailed
 
 after_build:
-  - echo "Making distribution..."
-  - cd c:\projects\java-cef\src\tools\
-  - make_distrib.bat %buildType%
-  - cd c:\projects\java-cef\src\binary_distrib
-  - 7z a jcef-%buildType%-distribution.zip %buildType%
+- pwsh: >-
+    cd $Env:APPVEYOR_BUILD_FOLDER/src/tools
+    cmd /c compile.bat "$Env:ARCH_DIST"
+    cmd /c make_distrib.bat "$Env:ARCH_DIST"
+    cd ../../
 
-artifacts:
-  - path: src\binary_distrib\jcef-%buildType%-distribution.zip
-    name: jcef-%buildType%-distribution
+before_deploy:
+- pwsh: >-
+    cd ./packaging
+    ./gradlew -DBIN_ARTIFACT="../src/binary_distrib" --info jcef
 
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: vbdorEkvzgQxLyrjmeO5E3lPkvCIdUJUT2zTzdILuXo8hLYyfffedGkRZLb5xjGR
+  artifact: /build\distributions\.*/
+  on:
+    branch: /master/
+    APPVEYOR_REPO_TAG: true
+
+after_deploy:
+- pwsh: cd ../
