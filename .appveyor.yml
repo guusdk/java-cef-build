@@ -5,7 +5,7 @@ branches:
   - master
 
 platform:
-  - x86
+  - win32
   - x64
 
 max_jobs: 2
@@ -25,7 +25,7 @@ environment:
 matrix:
   fast_finish: true
   exclude:
-    - platform: x86
+    - platform: win32
       ARCH_DIST: win64
     - platform: x64
       ARCH_DIST: win32
