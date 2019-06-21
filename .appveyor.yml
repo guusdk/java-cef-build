@@ -10,6 +10,7 @@ platform:
 
 max_jobs: 2
 image: Visual Studio 2015
+configuration: Release
 
 clone_depth: 1
 clone_folder: c:\%APPVEYOR_PROJECT_NAME%\
@@ -17,7 +18,9 @@ clone_folder: c:\%APPVEYOR_PROJECT_NAME%\
 environment:
   matrix:
   - ARCH_DIST: win32
+    CMAKE_GENERATOR: Visual Studio 14 2015
   - ARCH_DIST: win64
+    CMAKE_GENERATOR: Visual Studio 14 2015 Win64
 
 matrix:
   fast_finish: true
@@ -30,7 +33,7 @@ matrix:
 # https://www.appveyor.com/docs/environment-variables/
 before_build:
 - pwsh: >-
-    Write-Host "Platform: $Env:PLATFORM, ARCH_DIST: $Env:ARCH_DIST"
+    Write-Host "Platform: $Env:PLATFORM, ARCH_DIST: $Env:ARCH_DIST, GENERATOR: $Env:CMAKE_GENERATOR"
 
     git clone -q https://github.com/chromiumembedded/java-cef.git "$Env:APPVEYOR_BUILD_FOLDER/src"
 
@@ -40,13 +43,7 @@ before_build:
 
     cd "./jcef_build"
 
-    if ($Env:PLATFORM -eq 'x86') {
-      Write-Host "Choosing x86 CMake build"
-      cmake -G "Visual Studio 14" ../ 3>&1
-    } else {
-      Write-Host "Choosing x64 CMake build"
-      cmake -G "Visual Studio 14 Win64" -DCMAKE_BUILD_TYPE=Release ../ 3>&1
-    }
+    cmake -G "$Env:CMAKE_GENERATOR" ../ 3>&1
 
 build:
   project: .\src\jcef_build\jcef.sln
@@ -69,11 +66,16 @@ before_deploy:
 
     ./gradlew -DBIN_ARTIFACT="../src/binary_distrib" --info jcef
 
+artifacts:
+  - path: packaging\build\distributions\*.zip
+    name: dist
+
 deploy:
 - provider: GitHub
+  description: Automated release of the Java Chromium Embedded Framework based on source code in tag $(APPVEYOR_REPO_TAG_NAME).
   auth_token:
     secure: vbdorEkvzgQxLyrjmeO5E3lPkvCIdUJUT2zTzdILuXo8hLYyfffedGkRZLb5xjGR
-  artifact: /build\distributions\.*/
+  artifact: dist
   on:
     branch: /master/
     APPVEYOR_REPO_TAG: true
