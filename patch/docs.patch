@@ -1,5 +1,5 @@
 diff --git a/tools/make_distrib.sh b/tools/make_distrib.sh
-index abe30ed..eaaa3c7 100755
+index abe30ed..005937b 100755
 --- a/tools/make_distrib.sh
 +++ b/tools/make_distrib.sh
 @@ -13,7 +13,7 @@ else
@@ -36,7 +36,19 @@ index abe30ed..eaaa3c7 100755
  
      # Copy test program source and JAR file to the bin directory.
      cp -rf $SOURCE_PATH/tests $DISTRIB_BIN_PATH
-@@ -109,4 +111,3 @@ else
+@@ -92,6 +94,11 @@ else
+       mkdir -p "$DISTRIB_LIB_PATH"
+     fi
+ 
++    # Strip unneeded symbols
++    if [[ $1 == "linux32" || $1 == "linux64" ]]; then
++        strip --strip-all $OUT_BINARY_PATH/*.so
++    fi
++
+     cp -f $OUT_BINARY_PATH/chrome-sandbox $DISTRIB_LIB_PATH
+     cp -f $OUT_BINARY_PATH/libjcef.so $DISTRIB_LIB_PATH
+     cp -f $OUT_BINARY_PATH/jcef_helper $DISTRIB_LIB_PATH
+@@ -109,4 +116,3 @@ else
  
    cd tools
  fi
