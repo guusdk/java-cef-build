@@ -74,7 +74,7 @@ deploy:
     keep_history: true
     committer_from_gh: true
     github_token: $GITHUB_TOKEN_PRIVATE
-    local_dir: build/install/java-cef-build-docs
+    local_dir: packaging/build/install/java-cef-build-docs
     on:
       tags: true
       repo: smac89/java-cef-build
