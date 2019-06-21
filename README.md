@@ -10,7 +10,9 @@
 
 [![Latest Release](https://img.shields.io/github/release/smac89/java-cef-build.svg?color=black&label=Latest%20Release&logoColor=white&style=for-the-badge)](https://github.com/smac89/java-cef-build/releases)
 
-<small>Badges generated with https://shields.io</small>
+[![Website](https://img.shields.io/website/https/smac89.github.io/java-cef-build.svg?down_color=red&down_message=offline&label=Jcef%20javadocs&logo=java&style=for-the-badge&up_message=online)](https://smac89.github.io/java-cef-build)
+
+<small><sup>Badges generated with https://shields.io</sup></small>
 </div>
 
 ---
