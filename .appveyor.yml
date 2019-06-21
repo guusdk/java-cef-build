@@ -4,6 +4,10 @@ branches:
   only:
   - master
 
+platform:
+  - x86
+  - x64
+
 max_jobs: 2
 image: Visual Studio 2015
 configuration: Release
@@ -13,13 +17,16 @@ clone_folder: c:\%APPVEYOR_PROJECT_NAME%\
 
 environment:
   matrix:
-  - platform: x86
-    ARCH_DIST: win32
-  - platform: x64
-    ARCH_DIST: win64
+  - ARCH_DIST: win32
+  - ARCH_DIST: win64
 
 matrix:
   fast_finish: true
+  exclude:
+    - platform: x86
+      ARCH_DIST: win64
+    - platform: x64
+      ARCH_DIST: win32
 
 # https://www.appveyor.com/docs/environment-variables/
 before_build:
