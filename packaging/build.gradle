@@ -45,13 +45,7 @@ distributions {
     blobs {
         contents {
             if (arch_dist.contains("linux")) {
-                from (fileTree("$artifact/bin/lib/$arch_dist")) {
-                    include 'libjcef.so', 'jcef_helper', 'libcef.so', 'icudtl.dat',
-                            'natives_blob.bin', 'snapshot_blob.bin'
-                    include 'locales/**/*'
-                    include 'cef*.pak'
-                    include 'devtools_resources.pak'
-                }
+                from (fileTree("$artifact/bin/lib/$arch_dist"))
             } else if (arch_dist.contains("macosx")) {
                 from (fileTree("$artifact/bin/")) {
                     exclude '**/*.jar'
