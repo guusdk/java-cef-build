@@ -13,7 +13,10 @@ fi
 
 # Print the versions of the java tools to ensure
 # they are all pointing to the same jdk version
+(set -x
 echo "JAVA_HOME=$JAVA_HOME"
 java -version
 javac -version
 javadoc -J-version
+jar -J-version
+)
