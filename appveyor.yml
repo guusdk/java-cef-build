@@ -4,13 +4,13 @@ branches:
   only:
   - master
 
-max_jobs: 2
 image: Visual Studio 2015
 configuration: Release
 
 platform:
   - x64
   - x86
+
 clone_depth: 1
 clone_folder: c:\%APPVEYOR_PROJECT_NAME%\
 
@@ -20,6 +20,7 @@ environment:
   - ARCH_DIST: win32
 
 matrix:
+  fast_finish: true
   exclude:
     - platform: x86
       ARCH_DIST: win64
@@ -42,7 +43,7 @@ before_build:
 build:
   project: .\src\jcef_build\jcef.sln
   parallel: true
-  verbosity: detailed
+  verbosity: normal
 
 after_build:
 - pwsh: >-
