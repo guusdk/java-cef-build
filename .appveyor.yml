@@ -25,13 +25,17 @@ environment:
 matrix:
   fast_finish: true
 
+# https://www.appveyor.com/docs/environment-variables/
 before_build:
 - pwsh: >-
-    # https://www.appveyor.com/docs/environment-variables/
     git clone -q https://github.com/chromiumembedded/java-cef.git "$Env:APPVEYOR_BUILD_FOLDER/src"
+
     cd $Env:APPVEYOR_BUILD_FOLDER/src
+
     mkdir "./jcef_build"
+
     cd "./jcef_build"
+
     if ($Env:PLATFORM -eq 'x86') {
       cmake -G "Visual Studio 14 2015" ../ 3>&1
     } else {
@@ -46,13 +50,17 @@ build:
 after_build:
 - pwsh: >-
     cd $Env:APPVEYOR_BUILD_FOLDER/src/tools
+
     cmd /c compile.bat "$Env:ARCH_DIST"
+
     cmd /c make_distrib.bat "$Env:ARCH_DIST"
+
     cd ../../
 
 before_deploy:
 - pwsh: >-
     cd ./packaging
+
     ./gradlew -DBIN_ARTIFACT="../src/binary_distrib" --info jcef
 
 deploy:
