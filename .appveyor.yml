@@ -42,9 +42,11 @@ before_build:
     cd "./jcef_build"
 
     if ($Env:PLATFORM -eq 'x86') {
+      Write-Host "Choosing x86 CMake build"
       cmake -G "Visual Studio 14" ../ 3>&1
     } else {
-      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release ../ 3>&1
+      Write-Host "Choosing x64 CMake build"
+      cmake -G "Visual Studio 14 Win64" -DCMAKE_BUILD_TYPE=Release ../ 3>&1
     }
 
 build:
