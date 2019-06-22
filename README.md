@@ -26,4 +26,4 @@
 - [x] Package jars and native libraries for Linux and macosx
 - [x] Package jars and native libraries for windows
 - [x] Upload linux and macosx artifacts to github
-- [ ] Upload windows artifacts to github
+- [x] Upload windows artifacts to github
