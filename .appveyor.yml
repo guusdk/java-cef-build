@@ -70,17 +70,9 @@ artifacts:
   - path: packaging\build\distributions\*
     name: dist
 
-before_deploy:
-- pwsh: |-
-    Write-Host "About to deploy artifacts..."
-
 deploy:
 - provider: JavaCefBuildDeploy
   artifact: dist
   on:
     branch: /master/
     APPVEYOR_REPO_TAG: true
-
-after_deploy:
-- pwsh: |-
-    Write-Host "Deployed!"
