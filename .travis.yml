@@ -37,9 +37,20 @@ matrix:
       osx_image: xcode10.2
       compiler: clang
       env: ARCH_DIST=macosx64
-  # allow_failures:
-  #   - os: linux
-  #     env: ARCH_DIST=linux32 # Either travis allows 32bit builds or use docker. See https://github.com/travis-ci/travis-ci/issues/5770
+
+jobs:
+  include:
+    - stage: build docker image
+      os: linux
+      services: docker
+      dist: xenial
+      compiler: clang-8
+      jdk: openjdk8
+      env:
+        - ARCH_DIST=linux32
+        - CC=clang
+        - CXX=clang++
+      script: docker build --rm --tag travis-build .
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
