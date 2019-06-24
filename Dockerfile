@@ -2,6 +2,8 @@ FROM i386/alpine
 
 WORKDIR /src/app/jcef
 
+# Copy everything from the context into the
+# current directory of the container
 COPY . .
 
 # Upgrade all packages
