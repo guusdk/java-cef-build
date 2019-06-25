@@ -1,32 +1,21 @@
 FROM i386/alpine
 
-WORKDIR /src/app/jcef
-
-# Copy everything from the context into the
-# current directory of the container
-COPY . .
-
 # Upgrade all packages
 RUN apk update && apk upgrade
 
 # Install build tools
-RUN apk add bash build-base && \
+RUN apk add bash build-base git && \
     apk add openjdk8 && \
+    apk add python2 && \
     apk add ninja && \
     apk add cmake
 
-# # Before script
-# RUN git clone https://github.com/chromiumembedded/java-cef.git src && \
-#     ./apply-patches.sh ./src && \
-#     source setup-jdk.sh
-#
-# # script
-# RUN ./build.sh src
+# Add java bin to the path
+RUN export PATH="/usr/lib/jvm/java-1.8-openjdk/bin/:$PATH"
 
+ENV JAVA_HOME '/usr/lib/jvm/java-1.8-openjdk'
 
-
-
-
+CMD ["/bin/bash"]
 
 # ENV BUILD_PACKAGES bash git openssh curl-dev ruby-dev build-base
 # ENV RUBY_PACKAGES ruby ruby-io-console

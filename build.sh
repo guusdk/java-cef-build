@@ -1,13 +1,7 @@
-#!/bin/bash
+#!/bin/bash +x
 
-# $1 is the jcef repo
-if [ -z $1 ]; then
-  echo "USAGE: $0 <jcef_repo_path>"
-  exit 1
-fi
-
-mkdir -p $1/jcef_build
-cd $1/jcef_build
+mkdir -p $JCEF_DIR/jcef_build
+cd $JCEF_DIR/jcef_build
 
 # Generate build script with cmake
 if [[ "${TRAVIS_OS_NAME}" == 'osx' ]]; then
