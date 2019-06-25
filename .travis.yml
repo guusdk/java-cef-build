@@ -45,14 +45,17 @@ matrix:
         - CC=gcc
         - CXX=g++
       install:
+          - sudo update-ca-certificates
           - docker build --rm --tag travis-build .
           - |
             docker run --volume "$PWD:$TRAVIS_BUILD_DIR" \
              --volume /usr/local/share/ca-certificates:/usr/local/share/ca-certificates \
+             --volume /usr/share/ca-certificates:/usr/share/ca-certificates \
+             --volume /etc/ca-certificates:/etc/ca-certificates \
+             --volume /etc/ssl/certs:/etc/ssl/certs \
              --workdir "$TRAVIS_BUILD_DIR" \
              --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
              --name travis-build --detach --tty --interactive travis-build
-          - update-ca-certificates
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
@@ -65,7 +68,9 @@ before_script:
 script:
   - |
     if [ $ARCH_DIST == 'linux32' ]; then
-      docker exec -e JCEF_DIR travis-build './build.sh'
+      docker exec -e JCEF_DIR travis-build ./build.sh
+      docker container stop travis-build
+      docker container rm travis-build
     else
       ./build.sh
     fi

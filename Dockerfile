@@ -1,18 +1,18 @@
 FROM i386/alpine
 
-# Upgrade all packages
-RUN apk update && apk upgrade
+ENV BASE_PACKAGES bash build-base git openssl ca-certificates
+ENV BUILD_TOOLS openjdk8 python2 ninja cmake
 
-# Install build tools
-RUN apk add bash build-base git openssl && \
-    apk add openjdk8 && \
-    apk add python2 && \
-    apk add ninja && \
-    apk add cmake
+# Update and Install tools
+RUN apk update && apk upgrade && \
+    apk add $BASE_PACKAGES && \
+    apk add $BUILD_TOOLS && \
+    rm -rf /var/cache/apk/*
 
 # Add java bin to the path
 RUN export PATH="/usr/lib/jvm/java-1.8-openjdk/bin/:$PATH"
 
+# Point to JAVA_HOME
 ENV JAVA_HOME '/usr/lib/jvm/java-1.8-openjdk'
 
 CMD ["/bin/bash"]
