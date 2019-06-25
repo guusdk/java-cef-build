@@ -4,7 +4,7 @@ FROM i386/alpine
 RUN apk update && apk upgrade
 
 # Install build tools
-RUN apk add bash build-base git && \
+RUN apk add bash build-base git openssl && \
     apk add openjdk8 && \
     apk add python2 && \
     apk add ninja && \

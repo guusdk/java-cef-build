@@ -47,9 +47,12 @@ matrix:
       install:
           - docker build --rm --tag travis-build .
           - |
-            docker run --volume $PWD:$TRAVIS_BUILD_DIR --workdir $TRAVIS_BUILD_DIR \
-            --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
-            --name travis-build --detach --tty --interactive travis-build
+            docker run --volume "$PWD:$TRAVIS_BUILD_DIR" \
+             --volume /usr/local/share/ca-certificates:/usr/local/share/ca-certificates \
+             --workdir "$TRAVIS_BUILD_DIR" \
+             --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
+             --name travis-build --detach --tty --interactive travis-build
+          - update-ca-certificates
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
