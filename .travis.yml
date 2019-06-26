@@ -45,7 +45,6 @@ matrix:
         - CC=clang-8
         - CXX=clang++-8
       install:
-          - sudo update-ca-certificates
           - docker build --rm --tag travis-build .
           - |
             docker run --volume "$PWD:$TRAVIS_BUILD_DIR" \

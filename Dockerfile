@@ -25,5 +25,3 @@ ENV JAVA_HOME '/usr/lib/jvm/java-1.8-openjdk'
 
 # Point to Python
 ENV PYTHON_EXECUTABLE '/usr/bin/python2.7'
-
-CMD ["/bin/bash"]
