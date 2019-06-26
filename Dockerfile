@@ -1,6 +1,6 @@
 FROM i386/alpine
 
-ENV BASE_PACKAGES bash build-base git openssl ca-certificates
+ENV BASE_PACKAGES bash build-base git ca-certificates
 ENV BUILD_TOOLS openjdk8 python2 ninja cmake
 
 # Update and Install tools
