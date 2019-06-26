@@ -26,5 +26,5 @@ ENV JAVA_HOME '/usr/lib/jvm/java-1.8-openjdk'
 # point to python
 ENV PYTHON_EXECUTABLE '/usr/bin/python2.7'
 
-# configure locales
-RUN dpkg-reconfigure locales
+# java use utf-8
+ENV JAVA_TOOL_OPTIONS '-Dfile.encoding=UTF8'
