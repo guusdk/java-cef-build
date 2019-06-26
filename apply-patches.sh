@@ -7,5 +7,5 @@
 
 cdir=$(pwd)
 pushd $1
-git apply --verbose "$cdir/patch/*.patch"
+git apply --verbose $cdir/patch/*.patch
 popd

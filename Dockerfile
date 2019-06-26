@@ -1,68 +1,28 @@
-FROM i386/alpine
+FROM i386/debian:stretch-slim
 
-ENV BASE_PACKAGES bash build-base git ca-certificates
-ENV BUILD_TOOLS openjdk8 python2 ninja cmake
+ENV BASE_PACKAGES git libgtk2.0-dev libxss1 libxt-dev
+ENV BUILD_TOOLS openjdk-8-jdk python2.7 ninja-build clang-8 cmake
 
-# Update and Install tools
-RUN apk update && apk upgrade && \
-    apk add $BASE_PACKAGES && \
-    apk add $BUILD_TOOLS && \
-    rm -rf /var/cache/apk/*
+RUN apt-get install --no-install-recommends -y wget gnupg software-properties-common
+
+# Clang package sources
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
+    add-apt-repository "deb http://apt.llvm.org/stretch/ llvm-toolchain-stretch-8 main" && \
+    mkdir -p /usr/share/man/man1
+
+# Install tools
+RUN apt-get update && apt-get upgrade && \
+    apt-get install --no-install-recommends --yes $BASE_PACKAGES && \
+    apt-get install --no-install-recommends --yes $BUILD_TOOLS && \
+    apt-get autoclean
 
 # Add java bin to the path
-RUN export PATH="/usr/lib/jvm/java-1.8-openjdk/bin/:$PATH"
+ENV PATH "/usr/lib/jvm/java-1.8-openjdk/bin/:$PATH"
 
-# Point to JAVA_HOME
+# Point to java
 ENV JAVA_HOME '/usr/lib/jvm/java-1.8-openjdk'
 
-CMD ["/bin/bash"]
+# Point to Python
+ENV PYTHON_EXECUTABLE '/usr/bin/python2.7'
 
-# ENV BUILD_PACKAGES bash git openssh curl-dev ruby-dev build-base
-# ENV RUBY_PACKAGES ruby ruby-io-console
-#
-# # Update and install base packages
-# RUN apk update && \
-#     apk upgrade && \
-#     apk add $BUILD_PACKAGES && \
-#     apk add $RUBY_PACKAGES && \
-#     rm -rf /var/cache/apk/*
-#
-# RUN gem install travis bigdecimal --no-rdoc --no-ri
-#
-# # Travis support gems...
-# WORKDIR /src/app/travis-support
-#
-# RUN git clone https://github.com/travis-ci/travis-support.git .
-# RUN gem build ./travis-support.gemspec && \
-#     gem install travis-support --no-rdoc --no-ri
-#
-# WORKDIR /src/app/travis-github_apps
-#
-# RUN git clone https://github.com/travis-ci/travis-github_apps.git .
-# RUN gem build ./travis-github_apps.gemspec && \
-#     gem install travis-github_apps --no-rdoc --no-ri
-#
-# WORKDIR /src/app/travis-rollout
-#
-# RUN git clone https://github.com/travis-ci/travis-rollout.git .
-# RUN gem build ./travis-rollout.gemspec && \
-#     gem install travis-rollout --no-rdoc --no-ri
-#
-# WORKDIR /src/app
-#
-# # Travis build
-# RUN git clone https://github.com/travis-ci/travis-build
-# WORKDIR travis-build
-#
-# RUN rm Gemfile.lock && \
-#     mkdir -p ~/.travis && \
-#     ln -s $PWD ~/.travis/travis-build && \
-#     gem install bundler --no-rdoc --no-ri && \
-#     bundle install --gemfile ~/.travis/travis-build/Gemfile && \
-#     bundler add travis && \
-#     bundler binstubs travis
-#
-# WORKDIR /tmp/jcef
-# COPY . .
-#
-# CMD ["bash", "-c", "travis compile --org --no-interactive"]
+CMD ["/bin/bash"]

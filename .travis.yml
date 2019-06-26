@@ -42,8 +42,8 @@ matrix:
       services: docker
       env:
         - ARCH_DIST=linux32
-        - CC=gcc
-        - CXX=g++
+        - CC=clang-8
+        - CXX=clang++-8
       install:
           - sudo update-ca-certificates
           - docker build --rm --tag travis-build .
