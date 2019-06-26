@@ -50,7 +50,7 @@ matrix:
             docker run --volume "$PWD:$TRAVIS_BUILD_DIR" \
              --workdir "$TRAVIS_BUILD_DIR" \
              --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
-             --name travis-build --detach --tty --interactive travis-build
+             --name travis-build --detach --tty --interactive --rm travis-build
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
@@ -64,8 +64,7 @@ script:
   - |
     if [ $ARCH_DIST == 'linux32' ]; then
       docker exec -e JCEF_DIR travis-build ./build.sh && \
-      docker container stop travis-build && \
-      docker container rm travis-build
+      docker container stop travis-build
     else
       ./build.sh
     fi
