@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build the jars and native libraries
-./gradlew -DBIN_ARTIFACT="$1" --info jcef
+./gradlew -DBIN_ARTIFACT="$1" --info jcefPackage
 
 # Only build the pages if this is linux64
 if [[ $ARCH_DIST == 'linux64' ]]; then

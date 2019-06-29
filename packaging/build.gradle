@@ -32,6 +32,7 @@ distributions {
     }
 
     // Creates a collection of the javadocs
+    // Used when deploying the docs
     docs {
         contents {
             from (fileTree("$artifact/docs")) {
@@ -44,7 +45,7 @@ distributions {
     blobs {
         contents {
             if (!arch_dist.contains("macosx")) {
-                from (fileTree("$artifact/bin/lib/$arch_dist"))
+                from ("$artifact/bin/lib/$arch_dist")
             } else {
                 from (fileTree("$artifact/bin/")) {
                     exclude '**/*.jar'
@@ -52,32 +53,52 @@ distributions {
             }
         }
     }
-}
 
-// Main task to run everything
-task jcef(type: Zip) {
-    dependsOn installBlobsDist
-    dependsOn installJarsDist
-
-    archiveBaseName = provider { "$arch_dist" }
-
-    (dependsOn*.destinationDir).each { dest ->
-        into (dest.name) {
-            from(dest)
+    tests {
+        contents {
+            if (!arch_dist.contains('macosx')) {
+                from (fileTree(artifact)) {
+                    include 'run.sh', 'run.bat', 'compile.sh', 'compile.bat'
+                    include 'bin/jcef-tests.jar'
+                    include 'bin/tests/'
+                }
+            }
         }
     }
 }
 
-// Generate sha256 checksum of the output files
-task jcefchecksum(type: Checksum) {
-    dependsOn jcef
-    files = jcef.outputs.files
-    outputDir = file("$buildDir/distributions")
+// Main task to run everything
+task jcefPackage(type: Zip) {
+    dependsOn installBlobsDist
+    dependsOn installJarsDist
+    dependsOn installTestsDist
+
+    archiveBaseName = provider { "$arch_dist" }
+
+    (dependsOn*.outputs.files.singleFile).each { dest ->
+        into (dest.name) {
+            from(dest)
+        }
+    }
+
+    into("${installTestsDist.outputs.files.singleFile.name}/bin") {
+        from(installJarsDist.outputs.files.singleFile) {
+            include '*.jar'
+        }
+    }
 }
 
-jcef.finalizedBy jcefchecksum
+
+// Generate sha256 checksum of the output files
+task jcefChecksum(type: Checksum) {
+    dependsOn jcefPackage
+    files = jcefPackage.outputs.files
+    outputDir = file("$buildDir/distributions")
+}
 
 wrapper {
     distributionType = Wrapper.DistributionType.BIN
     gradleVersion = '5.4.1'
 }
+
+jcefPackage.finalizedBy jcefChecksum
