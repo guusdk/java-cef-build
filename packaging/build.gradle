@@ -47,9 +47,7 @@ distributions {
             if (!arch_dist.contains("macosx")) {
                 from ("$artifact/bin/lib/$arch_dist")
             } else {
-                from (fileTree("$artifact/bin/")) {
-                    exclude '**/*.jar'
-                }
+                from ("$artifact/bin/")
             }
         }
     }
@@ -81,9 +79,11 @@ task jcefPackage(type: Zip) {
         }
     }
 
-    into("${installTestsDist.outputs.files.singleFile.name}/bin") {
-        from(installJarsDist.outputs.files.singleFile) {
-            include '*.jar'
+    if (!arch_dist.contains('macosx')) {
+        into("${installTestsDist.outputs.files.singleFile.name}/bin") {
+            from(installJarsDist.outputs.files.singleFile) {
+                include '*.jar'
+            }
         }
     }
 }
