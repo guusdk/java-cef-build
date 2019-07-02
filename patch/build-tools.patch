@@ -1,3 +1,16 @@
+diff --git a/cmake/DownloadCEF.cmake b/cmake/DownloadCEF.cmake
+index f702268..0ba7082 100644
+--- a/cmake/DownloadCEF.cmake
++++ b/cmake/DownloadCEF.cmake
+@@ -41,7 +41,7 @@ function(DownloadCEF platform version download_dir)
+     # Extract the binary distribution.
+     message(STATUS "Extracting ${CEF_DOWNLOAD_PATH}...")
+     execute_process(
+-      COMMAND ${CMAKE_COMMAND} -E tar xzf "${CEF_DOWNLOAD_DIR}/${CEF_DOWNLOAD_FILENAME}"
++      COMMAND ${CMAKE_COMMAND} -E tar --use-compress-program=lbzip2 xzf "${CEF_DOWNLOAD_DIR}/${CEF_DOWNLOAD_FILENAME}"
+       WORKING_DIRECTORY ${CEF_DOWNLOAD_DIR}
+       )
+   endif()
 diff --git a/tools/buildtools/download_from_google_storage.py b/tools/buildtools/download_from_google_storage.py
 index fb09c6d..a3a19d1 100644
 --- a/tools/buildtools/download_from_google_storage.py

@@ -1,7 +1,7 @@
 FROM i386/debian:stretch-slim
 
 ENV BASE_PACKAGES git libgtk2.0-dev libxss1 libxt-dev
-ENV BUILD_TOOLS openjdk-8-jdk python2.7 ninja-build clang-8 cmake
+ENV BUILD_TOOLS openjdk-8-jdk python2.7 lbzip2 ninja-build clang-8 cmake
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y wget gnupg software-properties-common

@@ -23,6 +23,7 @@ matrix:
             - ninja-build
             - cmake
             - clang-8
+            - lbzip2
             - build-essential
             - libgtk2.0-dev
 
@@ -35,6 +36,7 @@ matrix:
           packages:
             - ninja
             - ant
+            - lbzip2
             - pyenv
           taps: AdoptOpenJDK/openjdk
           casks: adoptopenjdk8-openj9
