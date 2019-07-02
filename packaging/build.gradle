@@ -1,32 +1,20 @@
+import com.github.smac89.PZip
 import org.gradle.crypto.checksum.Checksum
 
 plugins {
     id 'distribution'
-    id "org.gradle.crypto.checksum" version "1.2.0"
+    id 'org.gradle.crypto.checksum' version '1.2.0'
 }
 
 // Checks in order: the environment, or a system property
-def arch_dist="${System.env.ARCH_DIST ?: System.properties.ARCH_DIST}"
-def artifact=file("${System.env.BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?: "$bin_artifact"}/$arch_dist")
+def arch_dist="${System.getenv().ARCH_DIST ?: System.properties.ARCH_DIST}"
+def artifact="${System.getenv().BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?: "$bin_artifact"}/$arch_dist"
 
 distributions {
-    // Combines all the jars required for jcef to run
-    jars {
+    bin {
         contents {
-            from (fileTree("$artifact/bin")) {
-                include '**/*.jar'
-                exclude '**/jcef-tests.jar'
-                eachFile {
-                    relativePath new RelativePath(true, name)
-                }
-                caseSensitive = false
-                includeEmptyDirs = false
-            }
-
-            into('readme') {
-                from(artifact) {
-                    include '*.txt'
-                }
+            from (fileTree("$artifact")) {
+                exclude "docs/"
             }
         }
     }
@@ -40,58 +28,29 @@ distributions {
             }
         }
     }
-
-    // Combines all the blobs as dictated in the README.txt
-    blobs {
-        contents {
-            if (!arch_dist.contains("macosx")) {
-                from ("$artifact/bin/lib/$arch_dist")
-            } else {
-                from ("$artifact/bin/")
-            }
-        }
-    }
-
-    tests {
-        contents {
-            if (!arch_dist.contains('macosx')) {
-                from (fileTree(artifact)) {
-                    include 'run.sh', 'run.bat', 'compile.sh', 'compile.bat'
-                    include 'bin/jcef-tests.jar'
-                    include 'bin/tests/'
-                }
-            }
-        }
-    }
 }
 
-// Main task to run everything
-task jcefPackage(type: Zip) {
-    dependsOn installBlobsDist
-    dependsOn installJarsDist
-    dependsOn installTestsDist
+task jcefPackage(type: PZip, group: 'build') {
+    description = 'Main task to run everything'
 
-    archiveBaseName = provider { "$arch_dist" }
+    def deps = [installBinDist].each {
+        jcefPackage.dependsOn(it)
+    }
 
-    (dependsOn*.outputs.files.singleFile).each { dest ->
+    archiveBaseName.convention "${arch_dist}".toString()
+
+    (deps*.outputs.files.singleFile).each { dest ->
         into (dest.name) {
             from(dest)
         }
     }
-
-    if (!arch_dist.contains('macosx')) {
-        into("${installTestsDist.outputs.files.singleFile.name}/bin") {
-            from(installJarsDist.outputs.files.singleFile) {
-                include '*.jar'
-            }
-        }
-    }
 }
 
-
-// Generate sha256 checksum of the output files
 task jcefChecksum(type: Checksum) {
+    description = 'Generate sha256 checksum of the output files'
+
     dependsOn jcefPackage
+
     files = jcefPackage.outputs.files
     outputDir = file("$buildDir/distributions")
 }

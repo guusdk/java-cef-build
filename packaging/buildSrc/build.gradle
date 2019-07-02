@@ -1,0 +1,17 @@
+plugins {
+    id 'groovy'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:2.5.7'
+
+    implementation 'org.apache.commons:commons-compress:1.18'
+    implementation 'commons-io:commons-io:2.5'
+}
