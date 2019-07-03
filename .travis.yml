@@ -33,7 +33,6 @@ matrix:
       env: ARCH_DIST=macosx64
       addons:
         homebrew:
-          update: true
           packages:
             - ninja
             - ant
