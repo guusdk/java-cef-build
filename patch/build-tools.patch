@@ -1,5 +1,5 @@
 diff --git a/cmake/DownloadCEF.cmake b/cmake/DownloadCEF.cmake
-index f702268..0ba7082 100644
+index f702268..c3fda87 100644
 --- a/cmake/DownloadCEF.cmake
 +++ b/cmake/DownloadCEF.cmake
 @@ -41,7 +41,7 @@ function(DownloadCEF platform version download_dir)
@@ -7,7 +7,7 @@ index f702268..0ba7082 100644
      message(STATUS "Extracting ${CEF_DOWNLOAD_PATH}...")
      execute_process(
 -      COMMAND ${CMAKE_COMMAND} -E tar xzf "${CEF_DOWNLOAD_DIR}/${CEF_DOWNLOAD_FILENAME}"
-+      COMMAND ${CMAKE_COMMAND} -E tar --use-compress-program=lbzip2 xzf "${CEF_DOWNLOAD_DIR}/${CEF_DOWNLOAD_FILENAME}"
++      COMMAND ${CMAKE_COMMAND} -E tar -xf "${CEF_DOWNLOAD_DIR}/${CEF_DOWNLOAD_FILENAME}" --use-compress-prog=lbzip2
        WORKING_DIRECTORY ${CEF_DOWNLOAD_DIR}
        )
    endif()

@@ -37,6 +37,7 @@ matrix:
             - ninja
             - ant
             - lbzip2
+            - gnu-tar
             - pyenv
           taps: AdoptOpenJDK/openjdk
           casks: adoptopenjdk8-openj9
@@ -56,6 +57,7 @@ matrix:
 
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
+  - if [ $TRAVIS_OS_NAME = 'osx' ]; then export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"; fi 
   - unset _JAVA_OPTIONS
 
 before_script:
