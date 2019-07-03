@@ -41,6 +41,10 @@ matrix:
             - pyenv
           taps: AdoptOpenJDK/openjdk
           casks: adoptopenjdk8-openj9
+      cache:
+        directories: $HOME/Library/Caches/Homebrew
+      before_cache: brew cleanup
+
     - os: linux
       services: docker
       env:
