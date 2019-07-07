@@ -2,7 +2,10 @@
 <h1>JCEF BUILD</h1>
 
 <h4>Independent project to produce binary artifacts for the jcef project</h4>
+<h6>Visit the JCEF repo at <a href="https://bitbucket.org/chromiumembedded/java-cef/src/master/">bitbucket</a> or <a href="https://github.com/chromiumembedded/java-cef">github</a> </h6>
 </div>
+
+---
 
 <div id="badges" align="center">
 
@@ -16,14 +19,3 @@
 
 <small><sup>Badges generated with https://shields.io</sup></small>
 </div>
-
----
-
-<div id="progress" align="center"><h2>Progress</h2></div>
-
-- [x] Successfully build on mac and linux
-- [x] Successfully build on Windows
-- [x] Package jars and native libraries for Linux and macosx
-- [x] Package jars and native libraries for windows
-- [x] Upload linux and macosx artifacts to github
-- [x] Upload windows artifacts to github
