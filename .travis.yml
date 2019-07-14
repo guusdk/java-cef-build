@@ -69,9 +69,9 @@ script:
   - |
     if [ $ARCH_DIST == 'linux32' ]; then
       docker exec -e JCEF_DIR travis-build ./build.sh && \
-      docker container stop travis-build
+      docker container stop travis-build || travis_terminate 1
     else
-      ./build.sh
+      ./build.sh || travis_terminate 1
     fi
 
 before_deploy:
