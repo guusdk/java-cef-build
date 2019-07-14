@@ -28,7 +28,7 @@ matrix:
             - libgtk2.0-dev
 
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11
       compiler: clang
       env: ARCH_DIST=macosx64
       addons:
@@ -69,9 +69,9 @@ script:
   - |
     if [ $ARCH_DIST == 'linux32' ]; then
       docker exec -e JCEF_DIR travis-build ./build.sh && \
-      docker container stop travis-build || travis_terminate 1
+      docker container stop travis-build || travis_terminate $?
     else
-      ./build.sh || travis_terminate 1
+      ./build.sh || travis_terminate $?
     fi
 
 before_deploy:
