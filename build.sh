@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 mkdir -p $JCEF_DIR/jcef_build
 cd $JCEF_DIR/jcef_build
@@ -11,7 +11,9 @@ else
 fi
 
 # build the library
-ninja || exit $?
+set -x
+ninja
+set +x
 
 cd ../tools
 
@@ -22,3 +24,4 @@ fi
 
 # Generate docs, copy libraries and jars to binary_distrib folder, etc
 ./make_distrib.sh $ARCH_DIST
+
