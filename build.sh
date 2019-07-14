@@ -1,4 +1,4 @@
-#!/bin/bash +x
+#!/bin/bash -ex
 
 mkdir -p $JCEF_DIR/jcef_build
 cd $JCEF_DIR/jcef_build
@@ -11,7 +11,7 @@ else
 fi
 
 # build the library
-ninja || exit 1
+ninja || exit $?
 
 cd ../tools
 
