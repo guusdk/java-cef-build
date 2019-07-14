@@ -12,7 +12,8 @@ fi
 
 # build the library
 if [ "$TRAVIS_OS_NAME" == 'osx' ]; then
-  xcodebuild  -list -project jcef.xcodeproj
+  # https://www.manpagez.com/man/1/xcodebuild/
+  xcodebuild -project jcef.xcodeproj -configuration Release
 else
   ninja
 fi
