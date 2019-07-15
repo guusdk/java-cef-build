@@ -28,7 +28,7 @@ matrix:
             - libgtk2.0-dev
 
     - os: osx
-      osx_image: xcode11
+      osx_image: xcode10.2
       compiler: clang
       env: ARCH_DIST=macosx64
       addons:
@@ -39,6 +39,7 @@ matrix:
             - lbzip2
             - gnu-tar
             - pyenv
+			- cmake
           taps: AdoptOpenJDK/openjdk
           casks: adoptopenjdk8-openj9
 

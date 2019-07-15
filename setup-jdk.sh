@@ -1,5 +1,5 @@
 # This is to ensure we are using the latest jdk-8
-if [ "${TRAVIS_OS_NAME}" == 'linux' ]; then
+if [[ "${TRAVIS_OS_NAME}" == 'linux' ]]; then
   if ! command -v jdk_switcher; then
     git clone https://github.com/michaelklishin/jdk_switcher.git
     source jdk_switcher/jdk_switcher.sh
