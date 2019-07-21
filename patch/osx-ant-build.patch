@@ -1,0 +1,50 @@
+diff --git a/build.xml b/build.xml
+index 14fc779..f44b54c 100644
+--- a/build.xml
++++ b/build.xml
+@@ -7,11 +7,11 @@
+   <property name="out.name"   value="${env.OUT_NAME}"/>
+   <property name="out.id"     value="${env.OUT_ID}"/>
+   <property name="out.mainclass" value="${env.OUT_MAINCLASS}"/>
+-  
++
+   <taskdef name="bundleapp"
+-      classname="com.oracle.appbundler.AppBundlerTask"   
++      classname="com.oracle.appbundler.AppBundlerTask"
+       classpath="third_party/appbundler/appbundler-1.0.jar" />
+-    
++
+   <path id="class.path">
+     <fileset dir="third_party/jogamp/jar">
+       <include name="gluegen-rt.jar"/>
+@@ -19,8 +19,11 @@
+       <include name="jogl-all.jar"/>
+       <include name="jogl-all-natives-macosx-universal.jar"/>
+     </fileset>
++    <fileset dir="third_party/junit">
++        <include name="junit*.jar"/>
++    </fileset>
+   </path>
+-    
++
+   <target name="compile">
+     <mkdir dir="${out.path}"/>
+     <javac encoding="UTF8" nowarn="on" deprecation="off" debug="on" includeantruntime="false" destdir="${out.path}"
+@@ -37,7 +40,7 @@
+       </fileset>
+     </copy>
+   </target>
+-    
++
+   <target name="jar" depends="compile">
+     <mkdir dir="${out.path}"/>
+     <jar destfile="${out.path}/jcef.jar" index="true" update="false">
+@@ -51,7 +54,7 @@
+       </fileset>
+     </jar>
+   </target>
+-    
++
+   <target name="bundle" depends="jar">
+     <mkdir dir="${out.path}"/>
+     <bundleapp outputdirectory="${out.path}"
