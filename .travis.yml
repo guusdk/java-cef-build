@@ -39,7 +39,7 @@ matrix:
             - lbzip2
             - gnu-tar
             - pyenv
-			- cmake
+            - cmake
           taps: AdoptOpenJDK/openjdk
           casks: adoptopenjdk8-openj9
 
@@ -56,7 +56,6 @@ matrix:
              --workdir "$TRAVIS_BUILD_DIR" \
              --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
              --name travis-build --detach --tty --interactive --rm travis-build
-
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
   - if [ $TRAVIS_OS_NAME = 'osx' ]; then export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"; fi 
@@ -74,7 +73,6 @@ script:
     else
       ./build.sh || travis_terminate $?
     fi
-
 before_deploy:
   - cd ./packaging && ../prepare-deploy.sh $JCEF_DIR/binary_distrib
 
