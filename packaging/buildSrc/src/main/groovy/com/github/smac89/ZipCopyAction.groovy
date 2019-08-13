@@ -4,11 +4,9 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.TupleConstructor
 import org.apache.commons.compress.archivers.zip.*
-import org.apache.commons.io.input.NullInputStream
 import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.internal.file.CopyActionProcessingStreamAction
-import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.copy.CopyAction
 import org.gradle.api.internal.file.copy.CopyActionProcessingStream
 import org.gradle.api.internal.file.copy.FileCopyDetailsInternal
@@ -19,8 +17,6 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Supplier
 
 @PackageScope
 @CompileStatic
@@ -28,19 +24,9 @@ import java.util.function.Supplier
 class ZipCopyAction implements CopyAction {
     final File zipFile
 
-    private final Supplier<File> DEFAULT_BACKING_STORE = new Supplier<File>() {
-        final AtomicInteger storeNum = new AtomicInteger(0)
-
-        @Override
-        File get() {
-            return File.createTempFile("zipCopyAction", "n${storeNum.incrementAndGet()}")
-        }
-    }
-
     @Override
     WorkResult execute(final CopyActionProcessingStream stream) {
-        ZipArchiveOutputStream zipOutStr = new ZipArchiveOutputStream(zipFile)
-        try {
+        new ZipArchiveOutputStream(zipFile).withCloseable { zipOutStr ->
             zipOutStr.with {
                 encoding = 'utf-8'
                 useLanguageEncodingFlag = true
@@ -48,17 +34,11 @@ class ZipCopyAction implements CopyAction {
                 fallbackToUTF8 = true
             }
 
-            ScatterZipOutputStream pZipDirCreator = ScatterZipOutputStream.fileBased(DEFAULT_BACKING_STORE.get())
             ParallelScatterZipCreator pZipCreator = new ParallelScatterZipCreator()
+            stream.process(new StreamAction(pZipCreator, zipOutStr))
 
-            stream.process(new StreamAction(pZipCreator, pZipDirCreator))
-
-            pZipDirCreator.writeTo(zipOutStr)
             pZipCreator.writeTo(zipOutStr)
-        } finally {
-            zipOutStr.close()
         }
-
         return WorkResults.didWork(true)
     }
 
@@ -66,7 +46,7 @@ class ZipCopyAction implements CopyAction {
     @TupleConstructor
     static class StreamAction implements CopyActionProcessingStreamAction {
         final ParallelScatterZipCreator pZipCreator
-        final ScatterZipOutputStream zipDirOutStr
+        final ZipArchiveOutputStream zipDirOutStr
 
         private final List<Path> visitedSymlinks = []
 
@@ -96,7 +76,7 @@ class ZipCopyAction implements CopyAction {
         private static boolean isSymLink(FileTreeElement treeElement) {
             try {
                 return Files.isSymbolicLink(Paths.get(treeElement.file.absolutePath))
-            } catch (UnsupportedOperationException usop) {
+            } catch (UnsupportedOperationException ignored) {
                 return false
             }
         }
@@ -108,9 +88,8 @@ class ZipCopyAction implements CopyAction {
                     setUnixMode(UnixStat.FILE_FLAG | fileDetails.mode)
                     setMethod(ZipMethod.DEFLATED.code)
                 }
-                return ZipArchiveEntryRequest.createZipArchiveEntryRequest(archiveEntry) {
-                    fileDetails.open()
-                }
+                return ZipArchiveEntryRequest.createZipArchiveEntryRequest(archiveEntry,
+                                                                           fileDetails.&open)
             }
         }
 
@@ -120,9 +99,8 @@ class ZipCopyAction implements CopyAction {
                 setUnixMode(UnixStat.DIR_FLAG | dirDetails.mode)
                 setMethod(ZipMethod.DEFLATED.code)
             }
-            zipDirOutStr.addArchiveEntry ZipArchiveEntryRequest.createZipArchiveEntryRequest(archiveEntry) {
-                new NullInputStream(0L)
-            }
+            zipDirOutStr.putArchiveEntry(archiveEntry)
+            zipDirOutStr.closeArchiveEntry()
         }
 
         protected void visitSymLink(FileCopyDetails linkDetails) {
