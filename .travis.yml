@@ -59,10 +59,10 @@ matrix:
 # see https://github.com/travis-ci/travis-ci/issues/8408
 before_install:
   - |
-	if [ $TRAVIS_OS_NAME = 'osx' ]; then 
-		# brew update # Just because 
-		export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH" 
-	fi
+    if [ $TRAVIS_OS_NAME = 'osx' ]; then 
+		  # brew update # Just because 
+		  export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH" 
+    fi
   - unset _JAVA_OPTIONS
 
 before_script:
