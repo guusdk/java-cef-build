@@ -56,14 +56,14 @@ matrix:
              --workdir "$TRAVIS_BUILD_DIR" \
              --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
              --name travis-build --detach --tty --interactive --rm travis-build
-# see https://github.com/travis-ci/travis-ci/issues/8408
+
 before_install:
   - |
     if [ $TRAVIS_OS_NAME = 'osx' ]; then 
-		  # brew update # Just because 
-		  export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH" 
+      # brew update # Just because
+      export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH" 
     fi
-  - unset _JAVA_OPTIONS
+  - unset _JAVA_OPTIONS # see https://github.com/travis-ci/travis-ci/issues/8408
 
 before_script:
   - export JCEF_DIR="$PWD/src"
