@@ -15,9 +15,12 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 1
+          path: jcef-build
       - name: Checkout JCEF
         uses: actions/checkout@master
         with:
           repository: chromiumembedded/java-cef
+          ref: master
+          path: jcef
       - name: Get latest release
         run: ls -l
