@@ -2,12 +2,17 @@ name: Publish Latest Releases
 
 on:
   schedule:
-    - cron: '0 12 */2 * *'
+    - cron: '0/2 * * * *'
 
 jobs:
   check-jcef-commits:
     runs-on: ubuntu-latest
     steps:
-#     - uses: actions/checkout@v1
-    - name: Check gradle
-      run: gradle --version
+      - name: Checkout JCEF 
+        uses: actions/checkout@master
+        with:
+          repository: chromiumembedded/java-cef
+      - name: Get latest release
+        uses: srt32/git-actions@v0.0.3
+        with:
+          args: git status
