@@ -1,0 +1,13 @@
+name: Publish Latest Releases
+
+on:
+  schedule:
+    - cron: '0 12 */2 * *'
+
+jobs:
+  check-jcef-commits:
+    runs-on: ubuntu-latest
+    steps:
+#     - uses: actions/checkout@v1
+    - name: Check gradle
+      run: gradle --version
