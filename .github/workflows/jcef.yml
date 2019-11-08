@@ -3,16 +3,20 @@ name: Publish Latest Releases
 on:
   schedule:
     - cron: '0 12 */2 * *'
+  release:
+    type: [edited]
 
 jobs:
   check-jcef-commits:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout JCEF 
+      - name: Checkout JCEF-BUILD 
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: Checkout JCEF
         uses: actions/checkout@master
         with:
           repository: chromiumembedded/java-cef
       - name: Get latest release
-        uses: srt32/git-actions@v0.0.3
-        with:
-          args: git status
+        run: ls -l
