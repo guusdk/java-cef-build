@@ -5,7 +5,7 @@ on:
     - cron: '0 12 */2 * *' # Every other day at 12pm
     - cron: '5 * * * *' # Every 5 minutes (for testing)
   release:
-    - type: [edited]
+    type: [edited]
 
 jobs:
   check-jcef-commits:
