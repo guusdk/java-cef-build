@@ -9,9 +9,11 @@ on:
 
 jobs:
   check-jcef-new-release:
+    runs-on: ubuntu-latest
+
     env:
       DYNAMIC_ENV_FILE: ${{ join($GITHUB_WORKSPACE, '__ENVIRONEMENTS') }}
-    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -27,6 +29,7 @@ jobs:
         run: |
           pwd
           echo $GITHUB_WORKSPACE
+          echo $DYNAMIC_ENV_FILE
           ls -l $GITHUB_WORKSPACE
           echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
           echo "::set-env name=LATEST_CEF_VERSION::$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
