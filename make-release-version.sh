@@ -1,7 +1,8 @@
 #!/bin/bash
 
 {
-	export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"(.+)"\s*\)/i && print "$1"' "$1/CMakeLists.txt")
+	# Pattern taken from https://bitbucket.org/chromiumembedded/cef/issues/2596/improve-cef-version-number-format#comment-50679036
+	export CEF_VERSION=$(perl -n -e  '/set\s*\(CEF_VERSION\s+"((?:\d+\.?){3}\+g\w+\+chromium-(?:\d+\.?){4})"\s*\)/i && print "$1"' "$1/CMakeLists.txt")
 	echo -e '\n\nChanges'
 
 	echo "git log --pretty=format:'%t - %s <%aN>' <commit1>...<commit2>"
