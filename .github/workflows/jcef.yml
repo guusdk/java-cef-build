@@ -10,7 +10,7 @@ on:
 jobs:
   check-jcef-new-release:
     env:
-      DYNAMIC_ENV_FILE: ${{ join(env.GITHUB_WORKSPACE, '__ENVIRONEMENTS') }}
+      DYNAMIC_ENV_FILE: ${{ join($GITHUB_WORKSPACE, '__ENVIRONEMENTS') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
