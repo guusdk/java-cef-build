@@ -1,14 +1,11 @@
 name: Publish Latest Releases
 
 on:
-  release:
-    types: [edited]
   schedule:
-#     - cron: '0 12 */2 * *' # Every other day at 12pm
-    - cron: '5 * * * *'      # Every 5 minutes (for testing)
+    - cron: '0 12 */2 * *' # Every other day at 12pm
 
 jobs:
-  check-jcef-new-release:
+  jcef-make-new-release:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +23,7 @@ jobs:
         shell: bash
         run: |
           echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
-          echo "::set-env name=LATEST_JCEF_VERSION::$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+          echo "::set-env name=LATEST_JCEF_VERSION::$($GITHUB_WORKSPACE/make-release-version.sh $GITHUB_WORKSPACE/jcef)"
 
       - name: Compare Versions
         shell: python
