@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DYNAMIC_ENV_FILE: ${{ join($GITHUB_WORKSPACE, '__ENVIRONEMENTS') }}
+      DYNAMIC_ENV_FILE: /tmp/ENVIRONEMENTS
 
     steps:
       - name: Checkout
@@ -39,10 +39,16 @@ jobs:
           EOF >> $DYNAMIC_ENV_FILE
           
       - name: Compare versions
-        shell: bash
+        shell: python
         run: |
-          pwd
-          cat $DYNAMIC_ENV_FILE
-          echo $GITHUB_WORKSPACE
-          echo $LATEST_BUILD_VERSION
-          echo $LATEST_CEF_VERSION
+          import os
+          from pkg_resources import parse_version
+          print (os.environ.get('DYNAMIC_ENV_FILE'))
+          print (os.environ.get('GITHUB_WORKSPACE'))
+          print (os.environ.get('LATEST_BUILD_VERSION'))
+          print (os.environ.get('LATEST_CEF_VERSION'))
+
+      - name: Create New Release
+        shell: bash
+        run: echo "NEW RELEASE!!!"
+  
