@@ -4,23 +4,28 @@ on:
   release:
     types: [edited]
   schedule:
-    - cron: '0 12 */2 * *' # Every other day at 12pm
-    - cron: '5 * * * *'    # Every 5 minutes (for testing)
+#     - cron: '0 12 */2 * *' # Every other day at 12pm
+    - cron: '5 * * * *'      # Every 5 minutes (for testing)
 
 jobs:
   check-jcef-commits:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout JCEF-BUILD 
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 1
-          path: jcef-build
+#       - name: Checkout JCEF-BUILD 
+#         uses: actions/checkout@master
+#         with:
+#           fetch-depth: 1
+#           path: jcef-build
       - name: Checkout JCEF
         uses: actions/checkout@master
         with:
           repository: chromiumembedded/java-cef
           ref: master
           path: jcef
-      - name: Get latest release
-        run: ls -l
+      - name: Get Latest Release
+        shell: bash
+        run: |
+          ls -l
+          ls -l $GITHUB_WORKSPACE
+          echo $GITHUB_WORKSPACE
+          ./make-release-version.sh
