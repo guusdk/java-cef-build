@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout JCEF-BUILD
+        uses: actions/checkout@v1
+        with:
+          path: jcef-build
+      
       - name: Checkout JCEF
         run: git clone https://github.com/chromiumembedded/java-cef jcef
 
