@@ -11,19 +11,28 @@ jobs:
   check-jcef-commits:
     runs-on: ubuntu-latest
     steps:
-#       - name: Checkout JCEF-BUILD 
-#         uses: actions/checkout@master
-#         with:
-#           fetch-depth: 1
-#           path: jcef-build
+      - name: Checkout
+        uses: actions/checkout@master
+
       - name: Checkout JCEF
         run: |
+          pwd
+          echo $GITHUB_WORKSPACE
           git clone https://github.com/chromiumembedded/java-cef jcef
-      - name: Get Latest Release
+
+      - name: Latest Published Release and Latest CEF Release
         shell: bash
         run: |
           pwd
-          ls -l
-          ls -l $GITHUB_WORKSPACE
           echo $GITHUB_WORKSPACE
-          ./make-release-version.sh $GITHUB_WORKSPACE/jcef
+          ls -l $GITHUB_WORKSPACE
+          export LATEST_BUILD_VERSION="$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
+          export LATEST_CEF_VERSION="$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+          
+      - name: Compare versions
+        shell: bash
+        run: |
+          pwd
+          echo $GITHUB_WORKSPACE
+          echo $LATEST_BUILD_VERSION
+          echo $LATEST_CEF_VERSION
