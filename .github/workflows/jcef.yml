@@ -47,6 +47,7 @@ jobs:
                 }
                 EOF
               )" | read code
-            exit "$([[ code == '200' ]])"
+            [[ code == '200' ]]
+            exit $?
         shell: bash
   
