@@ -2,55 +2,51 @@ name: Publish Latest Releases
 
 on:
   schedule:
-    - cron: '5 * * * *'      # Every 5 minutes (for testing)
-#     - cron: '0 12 */2 * *'   # Every other day at 12pm
+    - cron: '0 12 */2 * *'   # Every other day at 12pm
 
-jobs:
-  jcef-make-new-release:
+jobs: 
+  jcef-make-new-release: 
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout JCEF-BUILD
+    steps: 
+      - name: "Checkout JCEF-BUILD"
         uses: actions/checkout@v1
-        with:
+        with: 
           path: jcef-build
+
+      - name: "Checkout JCEF"
+        run: "git clone https://github.com/chromiumembedded/java-cef jcef"
       
-      - name: Checkout JCEF
-        run: git clone https://github.com/chromiumembedded/java-cef jcef
-
-      - name: Latest Published Release and Latest CEF Release
-        shell: bash
+      - name: "Latest Published Release and Latest CEF Release"
         run: |
-          pwd
-          ls -l
-          echo $GITHUB_WORKSPACE
-          ls -l $GITHUB_WORKSPACE
-          echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
-          echo "::set-env name=LATEST_JCEF_VERSION::$($GITHUB_WORKSPACE/make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+            echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
+            echo "::set-env name=LATEST_JCEF_VERSION::$($GITHUB_WORKSPACE/make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+        shell: bash
 
-      - name: Compare Versions
+      - name: "Compare Versions"
+        run: |
+            import os
+            from pkg_resources import parse_version
+            build_version = os.environ.get('LATEST_BUILD_VERSION')
+            jcef_version  = os.environ.get('LATEST_JCEF_VERSION')
+            exit (0) if parse_version(build_version) < parse_version(jcef_version) else exit(1)
         shell: python
-        run: |
-          import os
-          from pkg_resources import parse_version
-          build_version = os.environ.get('LATEST_BUILD_VERSION')
-          jcef_version  = os.environ.get('LATEST_JCEF_VERSION')
-          exit (0) if parse_version(build_version) < parse_version(jcef_version) else exit(1)
-
-      - name: Create New Release
+      
+      - name: "Create New Release"
         if: success()
+        run: |-
+            echo "NEW RELEASE!!!"
+            NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
+            curl --url https://api.github.com/repos/${{ github.repository }}/releases \
+                --header "Authorization: token ${{ secrets.TR_GITHUB_TOKEN }}" \
+                --silent --write-out '\n%{http_code}' \
+                --output >(jq '.')
+                --data "$(cat <<-EOF
+                {
+                  "tag_name:"$NEW_RELEASE_TAG",
+                  "name":"$NEW_RELEASE_TAG"
+                }
+                EOF
+              )" | read code
+            exit "$([[ code == '200' ]])"
         shell: bash
-        run: |
-          echo "NEW RELEASE!!!"
-          NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
-          curl --data "$(cat <<EOF
-            {
-              "tag_name:"$NEW_RELEASE_TAG",
-              "name":"$NEW_RELEASE_TAG"
-            }
-            EOF
-            )" --url https://api.github.com/repos/${{ github.repository }}/releases \
-               --header "Authorization: token ${{ secrets.TR_GITHUB_TOKEN }}" \
-               --silent --show-error
-          
   
