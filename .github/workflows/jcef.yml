@@ -34,12 +34,12 @@ jobs:
       - name: "Create New Release"
         if: success()
         run: |-
-            echo "NEW RELEASE!!!"
             NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
+            echo "NEW RELEASE: $NEW_RELEASE_TAG"
             curl --url https://api.github.com/repos/${{ github.repository }}/releases \
                 --header "Authorization: token ${{ secrets.TR_GITHUB_TOKEN }}" \
                 --silent --write-out '\n%{http_code}' \
-                --output >(jq '.')
+                --output >(jq '.') \
                 --data "$(cat <<-EOF
                 {
                   "tag_name:"$NEW_RELEASE_TAG",
@@ -48,6 +48,5 @@ jobs:
                 EOF
               )" | read code
             [[ code == '200' ]]
-            exit $?
         shell: bash
   
