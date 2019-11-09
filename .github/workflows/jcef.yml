@@ -8,24 +8,44 @@ on:
     - cron: '5 * * * *'      # Every 5 minutes (for testing)
 
 jobs:
-  check-jcef-commits:
+  check-jcef-new-release:
     runs-on: ubuntu-latest
+
     steps:
-#       - name: Checkout JCEF-BUILD 
-#         uses: actions/checkout@master
-#         with:
-#           fetch-depth: 1
-#           path: jcef-build
+      - name: Checkout
+        uses: actions/checkout@master
+
       - name: Checkout JCEF
         uses: actions/checkout@master
         with:
           repository: chromiumembedded/java-cef
           ref: master
           path: jcef
-      - name: Get Latest Release
+
+      - name: Latest Published Release and Latest CEF Release
         shell: bash
         run: |
-          ls -l
-          ls -l $GITHUB_WORKSPACE
-          echo $GITHUB_WORKSPACE
-          ./make-release-version.sh
+          echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
+          echo "::set-env name=LATEST_JCEF_VERSION::$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+
+      - name: Compare Versions
+        shell: python
+        run: |
+          import os
+          from pkg_resources import parse_version
+          build_version = os.environ.get('LATEST_BUILD_VERSION')
+          jcef_version  = os.environ.get('LATEST_JCEF_VERSION')
+          exit (0) if parse_version(build_version) < parse_version(jcef_version) else exit(1)
+
+      - name: Create New Release
+        if: success()
+        shell: bash
+        run: |
+          echo "NEW RELEASE!!!"
+          NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
+          curl --data "tag_name=$NEW_RELEASE_TAG" --data "name=$NEW_RELEASE_TAG" \
+               --url https://api.github.com/repos/${{ github.repository }}/releases \
+               --header "Authorization: token ${{ secrets.TR_GITHUB_TOKEN }}" \
+               --silent --show-error
+          
+  
