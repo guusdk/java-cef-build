@@ -2,8 +2,8 @@ name: Publish Latest Releases
 
 on:
   schedule:
-    - cron: '0 12 */2 * *'   # Every other day at 12pm
-
+#     - cron: '0 12 */2 * *'   # Every other day at 12pm
+    - cron: '5 * * * *'      # Every 5 minutes (For testing)
 jobs: 
   jcef-make-new-release: 
     runs-on: ubuntu-latest
