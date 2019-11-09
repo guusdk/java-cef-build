@@ -11,17 +11,14 @@ jobs:
   check-jcef-commits:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout JCEF-BUILD 
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 1
-          path: jcef-build
+#       - name: Checkout JCEF-BUILD 
+#         uses: actions/checkout@master
+#         with:
+#           fetch-depth: 1
+#           path: jcef-build
       - name: Checkout JCEF
-        uses: actions/checkout@master
-        with:
-          repository: chromiumembedded/java-cef
-          ref: master
-          path: jcef
+        run: |
+          git clone https://github.com/chromiumembedded/java-cef jcef
       - name: Get Latest Release
         shell: bash
         run: |
