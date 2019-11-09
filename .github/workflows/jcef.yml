@@ -8,7 +8,9 @@ on:
     - cron: '5 * * * *'      # Every 5 minutes (for testing)
 
 jobs:
-  check-jcef-commits:
+  check-jcef-new-release:
+    env:
+      DYNAMIC_ENV_FILE: ${{ join(env.GITHUB_WORKSPACE, '__ENVIRONEMENTS') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,13 +28,18 @@ jobs:
           pwd
           echo $GITHUB_WORKSPACE
           ls -l $GITHUB_WORKSPACE
-          export LATEST_BUILD_VERSION="$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
-          export LATEST_CEF_VERSION="$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+          echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
+          echo "::set-env name=LATEST_CEF_VERSION::$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+          cat <<EOF
+            export LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')
+            export LATEST_CEF_VERSION="$(./make-release-version.sh $GITHUB_WORKSPACE/jcef)"
+          EOF >> $DYNAMIC_ENV_FILE
           
       - name: Compare versions
         shell: bash
         run: |
           pwd
+          cat $DYNAMIC_ENV_FILE
           echo $GITHUB_WORKSPACE
           echo $LATEST_BUILD_VERSION
           echo $LATEST_CEF_VERSION
