@@ -11,11 +11,11 @@ jobs:
   check-jcef-commits:
     runs-on: ubuntu-latest
     steps:
-#       - name: Checkout JCEF-BUILD 
-#         uses: actions/checkout@master
-#         with:
-#           fetch-depth: 1
-#           path: jcef-build
+      - name: Checkout JCEF-BUILD 
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+          path: jcef-build
       - name: Checkout JCEF
         uses: actions/checkout@master
         with:
@@ -25,7 +25,8 @@ jobs:
       - name: Get Latest Release
         shell: bash
         run: |
+          pwd
           ls -l
           ls -l $GITHUB_WORKSPACE
           echo $GITHUB_WORKSPACE
-          ./make-release-version.sh
+          ./make-release-version.sh $GITHUB_WORKSPACE/jcef
