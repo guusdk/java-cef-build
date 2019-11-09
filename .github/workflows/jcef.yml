@@ -10,19 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
-
       - name: Checkout JCEF
-        uses: actions/checkout@master
-        with:
-          repository: chromiumembedded/java-cef
-          ref: master
-          path: jcef
+        run: git clone https://github.com/chromiumembedded/java-cef jcef
 
       - name: Latest Published Release and Latest CEF Release
         shell: bash
         run: |
+          pwd
+          ls -l
           echo $GITHUB_WORKSPACE
           ls -l $GITHUB_WORKSPACE
           echo "::set-env name=LATEST_BUILD_VERSION::$(git describe --tags --abbrev=0 | egrep -io '([0-9]+\.?){3}\+g\w+\+chromium-([0-9]+\.?){4}')"
