@@ -24,6 +24,7 @@ jobs:
         shell: bash
 
       - name: "Compare Versions"
+        if: success()
         run: |
             import os
             from pkg_resources import parse_version
@@ -33,7 +34,7 @@ jobs:
         shell: python
       
       - name: "Create New Release"
-        if: success() && ${{ env.NEW_RELEASE }} == '1'
+        if: success()
         run: |-
             if [[ $NEW_RELEASE == '1' ]]; then
                 export NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
