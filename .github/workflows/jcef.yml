@@ -36,12 +36,13 @@ jobs:
         run: |-
             echo "::set-env name=NEW_RELEASE_TAG::$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
             echo "NEW RELEASE: $NEW_RELEASE_TAG"
-            jq --null-input --compact-output '.tag_name=env.NEW_RELEASE_TAG | .name=env.NEW_RELEASE_TAG' | \
-                curl --url https://api.github.com/repos/${{ github.repository }}/releases \
-                     --header "Authorization: token ${{ secrets.TR_GITHUB_TOKEN }}" \
-                     --silent --show-error --write-out '\n%{http_code}' \
-                     --output >(jq '.') \
-                     --data '@-' | read code
-            [[ code == '200' ]]
+            read code < <(jq --null-input --compact-output '.tag_name=env.NEW_RELEASE_TAG | .name=env.NEW_RELEASE_TAG' \
+                          | curl --url https://api.github.com/repos/${{ github.repository }}/releases \
+                                 --header "Authorization: token ${{ secrets.TR_GITHUB_TOKEN }}" \
+                                 --silent --show-error --write-out '\n%{http_code}' \
+                                 --output /dev/stderr \
+                                 --data '@-'
+            )
+            [[ "$code" == '201' ]]
         shell: bash
   
