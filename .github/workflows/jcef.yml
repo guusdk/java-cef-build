@@ -33,7 +33,7 @@ jobs:
         shell: python
       
       - name: "Create New Release"
-        if: success() && ${{ NEW_RELEASE }} == '1'
+        if: success() && ${{ env.NEW_RELEASE }} == '1'
         run: |-
             export NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
             echo "NEW RELEASE: $NEW_RELEASE_TAG"
