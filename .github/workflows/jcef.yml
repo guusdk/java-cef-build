@@ -2,7 +2,8 @@ name: Publish Latest Releases
 
 on:
   schedule:
-    - cron: '0 12 */2 * *'   # Every other day at 12pm
+#     - cron: '0 12 */2 * *'   # Every other day at 12pm
+    - cron: '*/5 * * * *'    # Every other day at 12pm
 
 jobs: 
   jcef-make-new-release: 
@@ -28,11 +29,11 @@ jobs:
             from pkg_resources import parse_version
             build_version = os.environ.get('LATEST_BUILD_VERSION')
             jcef_version  = os.environ.get('LATEST_JCEF_VERSION')
-            exit (0) if parse_version(build_version) < parse_version(jcef_version) else exit(1)
+            print (f"::set-env name=NEW_RELEASE::{int(parse_version(build_version) < parse_version(jcef_version))}")
         shell: python
       
       - name: "Create New Release"
-        if: success()
+        if: success() && $NEW_RELEASE == '1'
         run: |-
             export NEW_RELEASE_TAG="$(git describe --tags --abbrev=0 | egrep -io '^v([0-9]+\.?){3}')-$LATEST_JCEF_VERSION"
             echo "NEW RELEASE: $NEW_RELEASE_TAG"
@@ -44,6 +45,6 @@ jobs:
                                  --data '@-'
             )
             echo $status
-            [[ "$status" == '200' ]]
+            [[ "$status" == '201' ]]
         shell: bash
   
