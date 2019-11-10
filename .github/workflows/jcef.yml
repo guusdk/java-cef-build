@@ -26,12 +26,11 @@ jobs:
       - name: "Compare Versions"
         if: success()
         run: |
-            #!python3
             import os
             from pkg_resources import parse_version
             build_version = os.environ.get('LATEST_BUILD_VERSION')
             jcef_version  = os.environ.get('LATEST_JCEF_VERSION')
-            print (f"::set-env name=NEW_RELEASE::{int(parse_version(build_version) < parse_version(jcef_version))}")
+            print ("::set-env name=NEW_RELEASE::{}".format(int(parse_version(build_version) < parse_version(jcef_version))))
         shell: python
       
       - name: "Create New Release"
