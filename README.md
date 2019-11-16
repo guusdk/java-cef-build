@@ -19,3 +19,12 @@
 
 <small><sup>Badges generated with https://shields.io</sup></small>
 </div>
+
+---
+
+### Actions status
+<a href="https://github.com/smac89/java-cef-build/actions?query=workflow%3A%22Publish+Latest+Releases%22"><img src="https://github.com/smac89/java-cef-build/workflows/Publish%20Latest%20Releases/badge.svg"/>
+</a>
+<a href="https://github.com/smac89/java-cef-build/actions?query=workflow%3A%22JCEF+Javadoc+Website%22">
+  <img src="https://github.com/smac89/java-cef-build/workflows/JCEF%20Javadoc%20Website/badge.svg"/>
+</a>
