@@ -1,4 +1,4 @@
-name: JCEF Javadoc Website
+name: Publish the JCEF Javadoc Website
 
 on:
   release:
