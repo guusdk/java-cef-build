@@ -10,7 +10,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
+      - uses: smac89/default-env@v1
       - name: "Checkout JCEF-BUILD"
         run: git clone https://github.com/smac89/java-cef-build.git jcef-build
 
