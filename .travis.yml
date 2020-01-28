@@ -58,6 +58,21 @@ matrix:
              --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
              --name travis-build --detach --tty --interactive --rm travis-build
 
+    - os: linux
+#      if: tag IS present
+      script:
+        - cd $JCEF_DIR/tools
+        - ./make_docs.sh
+      before_deploy:
+        - cd ./packaging
+        - ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" -DARCH_DIST="" --info installDocsDist
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        keep_history: true
+        github_token: $GITHUB_RELEASE_TOKEN_PRIVATE
+        local_dir: packaging/build/install/java-cef-build-docs
+
 before_install:
   - |
     if [ $TRAVIS_OS_NAME = 'osx' ]; then
@@ -77,6 +92,7 @@ script:
     else
       ./build.sh || travis_terminate $?
     fi
+
 before_deploy:
   - cd ./packaging && ../prepare-deploy.sh $JCEF_DIR/binary_distrib
 
