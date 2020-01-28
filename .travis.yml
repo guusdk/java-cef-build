@@ -60,12 +60,15 @@ matrix:
 
     - os: linux
 #      if: tag IS present
+      jdk: openjdk8
+      env:
+        - ARCH_DIST="linux64"
       script:
         - cd $JCEF_DIR/tools
         - ./make_docs.sh
       before_deploy:
         - cd $TRAVIS_BUILD_DIR/packaging
-        - ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" -DARCH_DIST="" --info installDocsDist
+        - ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" --info installDocsDist
       deploy:
         provider: pages
         skip_cleanup: true
