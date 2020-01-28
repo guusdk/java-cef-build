@@ -64,7 +64,7 @@ matrix:
         - cd $JCEF_DIR/tools
         - ./make_docs.sh
       before_deploy:
-        - cd ./packaging
+        - cd $TRAVIS_BUILD_DIR/packaging
         - ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" -DARCH_DIST="" --info installDocsDist
       deploy:
         provider: pages
