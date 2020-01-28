@@ -61,8 +61,6 @@ matrix:
     - os: linux
       if: tag IS present
       jdk: openjdk8
-      env:
-        - ARCH_DIST=""
       script:
         - cd $JCEF_DIR/tools
         - ./make_docs.sh
