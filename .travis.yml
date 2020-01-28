@@ -59,7 +59,7 @@ matrix:
              --name travis-build --detach --tty --interactive --rm travis-build
 
     - os: linux
-#      if: tag IS present
+      if: tag IS present
       jdk: openjdk8
       env:
         - ARCH_DIST="linux64"
@@ -68,7 +68,7 @@ matrix:
         - ./make_docs.sh
       before_deploy:
         - cd $TRAVIS_BUILD_DIR/packaging
-        - ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" -DARCH_DIST="" --info installDocsDist
+        - ARCH_DIST="/" ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" --quiet installDocsDist
       deploy:
         provider: pages
         skip_cleanup: true
