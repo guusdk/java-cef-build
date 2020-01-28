@@ -62,7 +62,7 @@ matrix:
       if: tag IS present
       jdk: openjdk8
       env:
-        - ARCH_DIST="linux64"
+        - ARCH_DIST=""
       script:
         - cd $JCEF_DIR/tools
         - ./make_docs.sh
@@ -71,9 +71,9 @@ matrix:
         - ARCH_DIST="/" ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" --quiet installDocsDist
       deploy:
         provider: pages
-        skip_cleanup: true
+        cleanup: false
         keep_history: true
-        github_token: $GITHUB_RELEASE_TOKEN_PRIVATE
+        token: $GITHUB_RELEASE_TOKEN_PRIVATE
         local_dir: packaging/build/install/java-cef-build-docs
 
 before_install:
@@ -105,8 +105,8 @@ after_deploy:
 # for encryption, see https://docs.travis-ci.com/user/encryption-keys/
 deploy:
   - provider: releases
-    skip_cleanup: true
-    api_key: $GITHUB_RELEASE_TOKEN_PRIVATE
+    cleanup: false
+    token: $GITHUB_RELEASE_TOKEN_PRIVATE
     file_glob: true
     file: build/distributions/*
     on:
