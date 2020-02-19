@@ -78,6 +78,8 @@ matrix:
         keep_history: true
         token: $GITHUB_RELEASE_TOKEN_PRIVATE
         local_dir: packaging/build/install/java-cef-build-docs
+        on:
+          repo: jcefbuild/java-cef-build
 
 before_install:
   - |
@@ -108,4 +110,4 @@ deploy:
     file: build/distributions/*
     on:
       tags: true
-      repo: smac89/java-cef-build
+      repo: jcefbuild/java-cef-build
