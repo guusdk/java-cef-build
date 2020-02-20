@@ -75,6 +75,7 @@ matrix:
       deploy:
         provider: pages
         cleanup: false
+        keep_history: false
         token: $GITHUB_RELEASE_TOKEN_PRIVATE
         edge: true
         local_dir: build/install/java-cef-build-docs
