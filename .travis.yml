@@ -75,10 +75,11 @@ matrix:
       deploy:
         provider: pages
         cleanup: false
-        keep_history: true
         token: $GITHUB_RELEASE_TOKEN_PRIVATE
+        edge: true
         local_dir: packaging/build/install/java-cef-build-docs
         on:
+          tags: true
           repo: jcefbuild/java-cef-build
 
 before_install:
@@ -103,11 +104,12 @@ after_deploy:
 
 # for encryption, see https://docs.travis-ci.com/user/encryption-keys/
 deploy:
-  - provider: releases
-    cleanup: false
-    token: $GITHUB_RELEASE_TOKEN_PRIVATE
-    file_glob: true
-    file: build/distributions/*
-    on:
-      tags: true
-      repo: jcefbuild/java-cef-build
+  provider: releases
+  edge: true
+  cleanup: false
+  token: $GITHUB_RELEASE_TOKEN_PRIVATE
+  file_glob: true
+  file: build/distributions/*
+  on:
+    tags: true
+    repo: jcefbuild/java-cef-build
