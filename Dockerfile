@@ -1,4 +1,4 @@
-FROM i386/debian:stretch-slim
+FROM i386/debian:buster-slim
 
 ENV BASE_PACKAGES git libgtk2.0-dev libxss1 libxt-dev
 ENV BUILD_TOOLS openjdk-8-jdk python3.7 lbzip2 rsync ninja-build clang-8 cmake
@@ -10,9 +10,6 @@ RUN apt-get -q update && \
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     add-apt-repository "deb http://apt.llvm.org/stretch/ llvm-toolchain-stretch-8 main" && \
     mkdir -p /usr/share/man/man1
-
-# python package sources
-RUN add-apt-repository ppa:deadsnakes/ppa
 
 # install tools
 RUN apt-get -q update && apt-get -q upgrade --yes && \
