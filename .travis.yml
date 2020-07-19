@@ -20,11 +20,13 @@ matrix:
         apt:
           update: true
           sources:
+            - deadsnakes
             - llvm-toolchain-xenial-8 # https://docs.travis-ci.com/user/installing-dependencies/#adding-apt-sources
           packages:
             - ninja-build
             - cmake
             - clang-8
+            - python3.7
             - lbzip2
             - build-essential
             - libgtk2.0-dev
@@ -39,6 +41,7 @@ matrix:
           packages:
             - ninja
             - ant
+            - python3
             - lbzip2
             - gnu-tar
             - cmake
@@ -113,4 +116,4 @@ deploy:
   file: build/distributions/*
   on:
     tags: true
-    repo: jcefbuild/java-cef-build
+    repo: jcefbuild/jcefbuild

@@ -12,7 +12,7 @@ index f702268..cbb3a65 100644
        )
    endif()
 diff --git a/tools/make_distrib.sh b/tools/make_distrib.sh
-index abe30ed..005937b 100755
+index abe30ed..12752fd 100755
 --- a/tools/make_distrib.sh
 +++ b/tools/make_distrib.sh
 @@ -13,7 +13,7 @@ else
@@ -61,11 +61,6 @@ index abe30ed..005937b 100755
      cp -f $OUT_BINARY_PATH/chrome-sandbox $DISTRIB_LIB_PATH
      cp -f $OUT_BINARY_PATH/libjcef.so $DISTRIB_LIB_PATH
      cp -f $OUT_BINARY_PATH/jcef_helper $DISTRIB_LIB_PATH
-@@ -109,4 +116,3 @@ else
- 
-   cd tools
- fi
--
 diff --git a/tools/make_docs.sh b/tools/make_docs.sh
 index c6e7c44..7d42f2c 100755
 --- a/tools/make_docs.sh
