@@ -1,7 +1,7 @@
 FROM i386/debian:buster-slim
 
 ENV BASE_PACKAGES git libgtk2.0-dev libxss1 libxt-dev
-ENV BUILD_TOOLS openjdk-8-jdk python3.7 lbzip2 rsync ninja-build clang-8 cmake
+ENV BUILD_TOOLS openjdk-11-jdk python3.7 lbzip2 rsync ninja-build clang-8 cmake
 
 RUN apt-get -q update && \
     apt-get -q install --no-install-recommends --yes wget apt-transport-https gnupg software-properties-common
@@ -18,10 +18,10 @@ RUN apt-get -q update && apt-get -q upgrade --yes && \
     apt-get -q autoclean
 
 # add java bin to the path
-ENV PATH "/usr/lib/jvm/java-1.8-openjdk/bin/:$PATH"
+ENV PATH "/usr/lib/jvm/java-11-openjdk/bin/:$PATH"
 
 # point to java
-ENV JAVA_HOME '/usr/lib/jvm/java-1.8-openjdk'
+ENV JAVA_HOME '/usr/lib/jvm/java-11-openjdk'
 
 # use python3.7 as default
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1

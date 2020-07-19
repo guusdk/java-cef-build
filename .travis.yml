@@ -11,7 +11,7 @@ matrix:
     - os: linux
       dist: xenial
       compiler: clang-8
-      jdk: openjdk8
+      jdk: openjdk11
       env:
         - ARCH_DIST=linux64
         - CC=clang-8
@@ -46,7 +46,7 @@ matrix:
             - gnu-tar
             - cmake
           taps: AdoptOpenJDK/openjdk
-          casks: adoptopenjdk8-openj9
+          casks: adoptopenjdk11-openj9
 
     - os: linux
       services: docker

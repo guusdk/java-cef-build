@@ -11,7 +11,7 @@
 
 [![Travis (.com) branch](https://img.shields.io/travis/com/jcefbuild/jcefbuild/master?label=osx%2Flinux&logo=travis-ci&logoColor=black&style=for-the-badge)](https://travis-ci.com/jcefbuild/jcefbuild)
 
-[![Build Status Appveyor](https://img.shields.io/appveyor/ci/smac89/java-cef-build.svg?color=%2300c7f4&label=Windows%20x86%20%2F%20x64&logo=appveyor&logoColor=black&style=for-the-badge)](https://ci.appveyor.com/project/smac89/java-cef-build)
+[![Build Status Appveyor](https://img.shields.io/appveyor/ci/smac89/jcefbuild.svg?color=%2300c7f4&label=Windows%20x86%20%2F%20x64&logo=appveyor&logoColor=black&style=for-the-badge)](https://ci.appveyor.com/project/smac89/java-cef-build)
 
 [![Latest Release](https://img.shields.io/github/release/jcefbuild/java-cef-build.svg?color=black&label=Latest%20Release&logoColor=black&logo=github&style=for-the-badge)](https://github.com/jcefbuild/java-cef-build/releases)
 
