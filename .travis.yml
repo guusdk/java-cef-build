@@ -4,6 +4,13 @@ language: java
 
 git:
   depth: false
+  symlinks: true
+
+branches:
+  only:
+    - master
+    - development
+    - /^v(?:\d+\.?){3,}(?<!\.)-.+chromium.+$/
 
 branches:
   only:
