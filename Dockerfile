@@ -1,6 +1,6 @@
 FROM i386/debian:buster-slim
 
-ENV BASE_PACKAGES git libgtk-3-dev libxss1 libxt-dev
+ENV BASE_PACKAGES git libgtk-3-dev libgtk2.0-dev libxss1 libxt-dev
 ENV BUILD_TOOLS openjdk-11-jdk python3.7 lbzip2 rsync ninja-build clang-10 cmake
 
 RUN apt-get -q update && \

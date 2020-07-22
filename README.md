@@ -3,6 +3,9 @@
 
 <h4>Independent project to produce binary artifacts for the jcef project</h4>
 <h6>Visit the JCEF repo at <a href="https://bitbucket.org/chromiumembedded/java-cef/src/master/">bitbucket</a> or <a href="https://github.com/chromiumembedded/java-cef">github</a> </h6>
+
+### Build Specs:
+#### _Java 11 (OpenJdk), Python 3.7_
 </div>
 
 ---

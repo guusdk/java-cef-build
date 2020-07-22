@@ -93,7 +93,7 @@ matrix:
         local_dir: build/install/java-cef-build-docs
         on:
           tags: true
-          repo: jcefbuild/java-cef-build
+          repo: jcefbuild/jcefbuild
 
 before_install:
   - |
