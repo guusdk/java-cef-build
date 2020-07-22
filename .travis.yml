@@ -12,11 +12,6 @@ branches:
     - development
     - /^v(?:\d+\.?){3,}(?<!\.)-.+chromium.+$/
 
-branches:
-  only:
-    - master
-    - development
-
 matrix:
   fast_finish: true
   include:
