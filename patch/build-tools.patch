@@ -12,7 +12,7 @@ index f702268..cbb3a65 100644
        )
    endif()
 diff --git a/tools/make_distrib.sh b/tools/make_distrib.sh
-index abe30ed..12752fd 100755
+index abe30ed..a7d97b1 100755
 --- a/tools/make_distrib.sh
 +++ b/tools/make_distrib.sh
 @@ -13,7 +13,7 @@ else
@@ -20,18 +20,20 @@ index abe30ed..12752fd 100755
    export DISTRIB_DOCS_PATH="$DISTRIB_PATH/docs"
    export OUT_PATH="./out"
 -  export OUT_DOCS_PATH="./out/docs"
-+  export OUT_DOCS_PATH="./out/docs/*"
++  export OUT_DOCS_PATH="./out/docs/"
    export SOURCE_PATH="./java"
    export JOGAMP_PATH="./third_party/jogamp"
    export TOOLS_DISTRIB_PATH="./tools/distrib/$1"
-@@ -29,6 +29,7 @@ else
+@@ -29,7 +29,8 @@ else
    cd ..
  
    # Copy documentation to the docs directory.
+-  cp -rf $OUT_DOCS_PATH $DISTRIB_DOCS_PATH
 +  mkdir -p $DISTRIB_DOCS_PATH
-   cp -rf $OUT_DOCS_PATH $DISTRIB_DOCS_PATH
++  cp -rf $OUT_DOCS_PATH/* $DISTRIB_DOCS_PATH
  
    # Create README.txt
+   python tools/make_readme.py --output-dir $DISTRIB_PATH/ --platform $DISTRIB_PLATFORM
 @@ -64,7 +65,7 @@ else
        echo "ERROR: Native Release build output path does not exist"
        exit 1
@@ -62,7 +64,7 @@ index abe30ed..12752fd 100755
      cp -f $OUT_BINARY_PATH/libjcef.so $DISTRIB_LIB_PATH
      cp -f $OUT_BINARY_PATH/jcef_helper $DISTRIB_LIB_PATH
 diff --git a/tools/make_docs.sh b/tools/make_docs.sh
-index c6e7c44..7d42f2c 100755
+index c6e7c44..89a39f4 100755
 --- a/tools/make_docs.sh
 +++ b/tools/make_docs.sh
 @@ -7,6 +7,10 @@ cd ../java
@@ -72,7 +74,7 @@ index c6e7c44..7d42f2c 100755
 -javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" -footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy 2013 Marshall A. Greenblatt</center>" -nodeprecated -d $OUT_PATH -link http://docs.oracle.com/javase/7/docs/api/ -subpackages org.cef
 +javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" \
 +-footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy $(date '+%Y') Marshall A. Greenblatt</center>" \
-+-nodeprecated -d $OUT_PATH -link 'https://docs.oracle.com/javase/8/docs/api/' \
++-nodeprecated -d $OUT_PATH -link 'https://docs.oracle.com/en/java/javase/11/docs/api/' \
 +-subpackages org.cef \
 +-classpath .:../third_party/jogamp/jar/*
  

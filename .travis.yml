@@ -5,39 +5,46 @@ language: java
 git:
   depth: false
 
+branches:
+  only:
+    - master
+    - development
+
 matrix:
   fast_finish: true
   include:
     - os: linux
       dist: xenial
-      compiler: clang-8
       jdk: openjdk11
       env:
         - ARCH_DIST=linux64
-        - CC=clang-8
-        - CXX=clang++-8
+        - PYTHON_EXECUTABLE='/usr/bin/python3.7'
+        - CC=clang-10
+        - CXX=clang++-10
       addons:
         apt:
           update: true
           sources:
             - deadsnakes
-            - llvm-toolchain-xenial-8 # https://docs.travis-ci.com/user/installing-dependencies/#adding-apt-sources
+            # https://docs.travis-ci.com/user/installing-dependencies#adding-apt-sources
+            - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - ninja-build
             - cmake
-            - clang-8
+            - clang-10
             - python3.7
             - lbzip2
             - build-essential
             - libgtk2.0-dev
 
     - os: osx
-      osx_image: xcode11
+      osx_image: xcode12
       compiler: clang
       env: ARCH_DIST=macosx64
       addons:
         homebrew:
-          update: true
+          update: false
           packages:
             - ninja
             - ant
@@ -46,14 +53,14 @@ matrix:
             - gnu-tar
             - cmake
           taps: AdoptOpenJDK/openjdk
-          casks: adoptopenjdk11-openj9
+          casks: adoptopenjdk11
 
     - os: linux
       services: docker
       env:
         - ARCH_DIST=linux32
-        - CC=clang-8
-        - CXX=clang++-8
+        - CC=clang-10
+        - CXX=clang++-10
       install:
           - docker build --rm --tag travis-build .
           - |
@@ -68,7 +75,7 @@ matrix:
 
     - os: linux
       if: tag IS present
-      jdk: openjdk8
+      jdk: openjdk11
       script:
         - cd $JCEF_DIR/tools
         - ./make_docs.sh
@@ -89,7 +96,9 @@ matrix:
 before_install:
   - |
     if [ $TRAVIS_OS_NAME = 'osx' ]; then
+      # Ensure all homebrew packages are seen first
       export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
+      export PATH="/usr/local/opt/python3/libexec/bin:$PATH"
     fi
   - unset _JAVA_OPTIONS # see https://github.com/travis-ci/travis-ci/issues/8408
 
