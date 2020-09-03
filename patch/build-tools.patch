@@ -12,82 +12,46 @@ index f702268..cbb3a65 100644
        )
    endif()
 diff --git a/tools/make_distrib.sh b/tools/make_distrib.sh
-index abe30ed..a7d97b1 100755
+index cd2fd54..6dee431 100755
 --- a/tools/make_distrib.sh
 +++ b/tools/make_distrib.sh
-@@ -13,7 +13,7 @@ else
-   export DISTRIB_BIN_PATH="$DISTRIB_PATH/bin"
-   export DISTRIB_DOCS_PATH="$DISTRIB_PATH/docs"
-   export OUT_PATH="./out"
--  export OUT_DOCS_PATH="./out/docs"
-+  export OUT_DOCS_PATH="./out/docs/"
-   export SOURCE_PATH="./java"
-   export JOGAMP_PATH="./third_party/jogamp"
-   export TOOLS_DISTRIB_PATH="./tools/distrib/$1"
-@@ -29,7 +29,8 @@ else
-   cd ..
- 
-   # Copy documentation to the docs directory.
--  cp -rf $OUT_DOCS_PATH $DISTRIB_DOCS_PATH
-+  mkdir -p $DISTRIB_DOCS_PATH
-+  cp -rf $OUT_DOCS_PATH/* $DISTRIB_DOCS_PATH
- 
-   # Create README.txt
-   python tools/make_readme.py --output-dir $DISTRIB_PATH/ --platform $DISTRIB_PLATFORM
-@@ -64,7 +65,7 @@ else
-       echo "ERROR: Native Release build output path does not exist"
-       exit 1
-     fi
--  
-+
-     # Create the JCEF JAR file.
-     cd tools
-     ./make_jar.sh $1
-@@ -82,6 +83,7 @@ else
-     cp -f $JOGAMP_JAR_PATH/gluegen-rt-natives-linux-$JOGAMP_JAR_SUFFIX.jar $DISTRIB_BIN_PATH
-     cp -f $JOGAMP_JAR_PATH/jogl-all-natives-linux-$JOGAMP_JAR_SUFFIX.jar $DISTRIB_BIN_PATH
-     cp -f $OUT_PATH/$1/jcef.jar $DISTRIB_BIN_PATH
-+    cp -f $OUT_PATH/$1/jcef-sources.jar $DISTRIB_BIN_PATH
- 
-     # Copy test program source and JAR file to the bin directory.
-     cp -rf $SOURCE_PATH/tests $DISTRIB_BIN_PATH
-@@ -92,6 +94,11 @@ else
+@@ -87,6 +87,11 @@ else
        mkdir -p "$DISTRIB_LIB_PATH"
      fi
  
 +    # Strip unneeded symbols
 +    if [[ $1 == "linux32" || $1 == "linux64" ]]; then
-+        strip --strip-all $OUT_BINARY_PATH/*.so
++      strip --strip-all $OUT_BINARY_PATH/*.so
 +    fi
 +
-     cp -f $OUT_BINARY_PATH/chrome-sandbox $DISTRIB_LIB_PATH
-     cp -f $OUT_BINARY_PATH/libjcef.so $DISTRIB_LIB_PATH
-     cp -f $OUT_BINARY_PATH/jcef_helper $DISTRIB_LIB_PATH
+     cp -f "$OUT_BINARY_PATH"/chrome-sandbox "$DISTRIB_LIB_PATH"
+     cp -f "$OUT_BINARY_PATH"/libjcef.so "$DISTRIB_LIB_PATH"
+     cp -f "$OUT_BINARY_PATH"/jcef_helper "$DISTRIB_LIB_PATH"
 diff --git a/tools/make_docs.sh b/tools/make_docs.sh
-index c6e7c44..89a39f4 100755
+index 01e4d52..f61aac3 100755
 --- a/tools/make_docs.sh
 +++ b/tools/make_docs.sh
-@@ -7,6 +7,10 @@ cd ../java
+@@ -6,5 +6,10 @@
+ DIR="$( cd "$( dirname "$0" )" && cd .. && pwd )"
+ OUT_PATH="${DIR}/out/docs"
  
- export OUT_PATH="../out/docs"
+-javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" -footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy 2013 Marshall A. Greenblatt</center>" -nodeprecated -d "$OUT_PATH" -sourcepath "${DIR}/java" -link http://docs.oracle.com/javase/7/docs/api/ -subpackages org.cef
++export CLASSPATH="${DIR}/third_party/jogamp/jar/*"
  
--javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" -footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy 2013 Marshall A. Greenblatt</center>" -nodeprecated -d $OUT_PATH -link http://docs.oracle.com/javase/7/docs/api/ -subpackages org.cef
 +javadoc -Xdoclint:none -windowtitle "CEF3 Java API Docs" \
 +-footer "<center><a href="https://bitbucket.org/chromiumembedded/java-cef" target="_top">Chromium Embedded Framework (CEF)</a> Copyright &copy $(date '+%Y') Marshall A. Greenblatt</center>" \
-+-nodeprecated -d $OUT_PATH -link 'https://docs.oracle.com/en/java/javase/11/docs/api/' \
++-nodeprecated -d "$OUT_PATH" -sourcepath "${DIR}/java" -link 'http://docs.oracle.com/en/java/javase/11/docs/api/' \
 +-subpackages org.cef \
-+-classpath .:../third_party/jogamp/jar/*
- 
- cd ../tools
++-javafx --ignore-source-errors
 diff --git a/tools/make_jar.sh b/tools/make_jar.sh
-index bcba2fb..c5e53e9 100755
+index 1bc2618..d55d3f1 100755
 --- a/tools/make_jar.sh
 +++ b/tools/make_jar.sh
 @@ -8,6 +8,7 @@ if [ -z "$1" ]; then
  else
-   cd ../out/$1
-   jar -cf jcef.jar org/cef/*.class org/cef/browser/*.class org/cef/callback/*.class org/cef/handler/*.class org/cef/misc/*.class org/cef/network/*.class
-+  jar -cvf jcef-sources.jar -C ../../java/ org/cef
-   jar -cf jcef-tests.jar tests/detailed/*.class tests/detailed/dialog/*.class tests/detailed/handler/* tests/detailed/ui/*.class
-   cd ../../tools
+   DIR="$( cd "$( dirname "$0" )" && cd .. && pwd )"
+   OUT_DIR="${DIR}/out/$1"
++  jar -cf "${OUT_DIR}/jcef-sources.jar" -C "${DIR}/java" org/cef
+   jar -cf "${OUT_DIR}"/jcef.jar -C "${OUT_DIR}" org
+   jar -cf "${OUT_DIR}"/jcef-tests.jar -C "${OUT_DIR}" tests
  fi
