@@ -1,0 +1,63 @@
+import com.github.smac89.PZip
+import org.gradle.crypto.checksum.Checksum
+
+plugins {
+    id 'distribution'
+    id 'org.gradle.crypto.checksum' version '1.2.0'
+}
+
+// Checks in order: the environment, or a system property
+def arch_dist="${System.getenv().ARCH_DIST ?: System.properties.ARCH_DIST}"
+def artifact="${System.getenv().BIN_ARTIFACT ?: System.properties.BIN_ARTIFACT ?: "$bin_artifact"}/$arch_dist"
+
+distributions {
+    bin {
+        contents {
+            from (fileTree("$artifact")) {
+                exclude "docs/"
+            }
+        }
+    }
+
+    // Creates a collection of the javadocs
+    // Used when deploying the docs
+    docs {
+        contents {
+            from (fileTree("$artifact/docs")) {
+                includeEmptyDirs = false
+            }
+        }
+    }
+}
+
+task jcefPackage(type: PZip, group: 'build') {
+    description = 'Main task to run everything'
+
+    def deps = [installBinDist].each {
+        jcefPackage.dependsOn(it)
+    }
+
+    archiveBaseName.convention "${arch_dist}".toString()
+
+    (deps*.outputs.files.singleFile).each { dest ->
+        into (dest.name) {
+            from(dest)
+        }
+    }
+}
+
+task jcefChecksum(type: Checksum) {
+    description = 'Generate sha256 checksum of the output files'
+
+    dependsOn jcefPackage
+
+    files = jcefPackage.outputs.files
+    outputDir = file("$buildDir/distributions")
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = '5.4.1'
+}
+
+jcefPackage.finalizedBy jcefChecksum

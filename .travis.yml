@@ -1,19 +1,130 @@
-language: cpp
+# https://config.travis-ci.com/explore
+
+language: java
+
+git:
+  depth: false
+  symlinks: true
+
+branches:
+  only:
+    - master
+    - development
+    - /^v(?:\d+\.?){3,}(?<!\.)-.+chromium.+$/
 
 matrix:
+  fast_finish: true
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
+      jdk: openjdk11
+      env:
+        - ARCH_DIST=linux64
+        - PYTHON_EXECUTABLE='/usr/bin/python3.7'
+        - CC=clang-10
+        - CXX=clang++-10
+      addons:
+        apt:
+          update: true
+          sources:
+            - deadsnakes
+            # https://docs.travis-ci.com/user/installing-dependencies#adding-apt-sources
+            - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+          packages:
+            - ninja-build
+            - cmake
+            - clang-10
+            - python3.7
+            - lbzip2
+            - build-essential
+            - libgtk2.0-dev
+
     - os: osx
+      osx_image: xcode12
+      compiler: clang
+      env: ARCH_DIST=macosx64
+      addons:
+        homebrew:
+          update: false
+          packages:
+            - ninja
+            - ant
+            - python3
+            - lbzip2
+            - gnu-tar
+            - cmake
+          taps: AdoptOpenJDK/openjdk
+          casks: adoptopenjdk11
+
+    - os: linux
+      services: docker
+      env:
+        - ARCH_DIST=linux32
+        - CC=clang-10
+        - CXX=clang++-10
+      install:
+          - docker build --rm --tag travis-build .
+          - |
+            docker run --volume "$PWD:$TRAVIS_BUILD_DIR" \
+             --workdir "$TRAVIS_BUILD_DIR" \
+             --env ARCH_DIST --env CC --env CXX --env TRAVIS_OS_NAME \
+             --name travis-build --detach --tty --interactive --rm travis-build
+      script:
+          - |
+            docker exec -e JCEF_DIR travis-build ./build.sh
+            docker container stop travis-build || travis_terminate $?
+
+    - os: linux
+      if: tag IS present
+      jdk: openjdk11
+      script:
+        - cd $JCEF_DIR/tools
+        - ./make_docs.sh
+      before_deploy:
+        - cd $TRAVIS_BUILD_DIR/packaging
+        - ARCH_DIST="/" ./gradlew --no-daemon -DBIN_ARTIFACT="$JCEF_DIR/out/" --quiet installDocsDist
+      deploy:
+        provider: pages
+        cleanup: false
+        keep_history: false
+        token: $GITHUB_RELEASE_TOKEN_PRIVATE
+        edge: true
+        local_dir: build/install/java-cef-build-docs
+        on:
+          tags: true
+          repo: jcefbuild/jcefbuild
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ant; fi
+  - |
+    if [ $TRAVIS_OS_NAME = 'osx' ]; then
+      # Ensure all homebrew packages are seen first
+      export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
+      export PATH="/usr/local/opt/python3/libexec/bin:$PATH"
+    fi
+  - unset _JAVA_OPTIONS # see https://github.com/travis-ci/travis-ci/issues/8408
 
 before_script:
- - git clone https://bitbucket.org/chromiumembedded/java-cef.git src
- - cd src && mkdir jcef_build && cd jcef_build
+  - export JCEF_DIR="$PWD/src"
+  - source ./prepare-build.sh
 
 script:
- - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. ; fi
- - if [[ "$TRAVIS_OS_NAME" != "linux" ]]; then cmake -G "Unix Makefiles" -DPROJECT_ARCH="x86_64" -DCMAKE_BUILD_TYPE=Release .. ; fi
- - make -j4
+  - ./build.sh || travis_terminate $?
+
+before_deploy:
+  - cd ./packaging && ../prepare-deploy.sh $JCEF_DIR/binary_distrib
+
+after_deploy:
+  - cd ../
+
+# for encryption, see https://docs.travis-ci.com/user/encryption-keys/
+deploy:
+  provider: releases
+  edge: true
+  cleanup: false
+  token: $GITHUB_RELEASE_TOKEN_PRIVATE
+  file_glob: true
+  file: build/distributions/*
+  on:
+    tags: true
+    repo: jcefbuild/jcefbuild
