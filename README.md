@@ -1,8 +1,11 @@
 <div id="title" align="center">
-<h1>JCEF BUILD</h1>
-
-<h4>Independent project to produce binary artifacts for the jcef project</h4>
-<h6>Visit the JCEF repo at <a href="https://bitbucket.org/chromiumembedded/java-cef/src/master/">bitbucket</a> or <a href="https://github.com/chromiumembedded/java-cef">github</a> </h6>
+  <h2>This repository has been archived.</h2>
+  <h3>Long live <a href="https://github.com/jcefmaven/jcefbuild">jcefbuild</a>! thanks to user <a href="https://github.com/FriwiDev">@FriwiDev</a></h3>
+  <hr/>
+  
+  <h1>JCEF BUILD</h1>
+  <h4>Independent project to produce binary artifacts for the jcef project</h4>
+  <h6>Visit the JCEF repo at <a href="https://bitbucket.org/chromiumembedded/java-cef/src/master/">bitbucket</a> or <a href="https://github.com/chromiumembedded/java-cef">github</a> </h6>
 
 ### Build Specs:
 
@@ -11,7 +14,6 @@
 |**Java**|AdoptOpenJDK 11|OpenJDK11|AdoptOpenJDK 11|
 |**Compiler**|Visual Studio 2017|Clang 10|Xcode 12|
 |**Build**|Python 3.7; `msbuild`|Python 3.7; `ninja`|Python 3.8; `ninja`|
-
 </div>
 
 ---
