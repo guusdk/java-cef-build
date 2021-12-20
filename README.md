@@ -1,5 +1,5 @@
 <div id="title" align="center">
-  <h2>This repository has been archived.</h2>
+  <h2>This repository will soon be archived.</h2>
   <h3>Long live <a href="https://github.com/jcefmaven/jcefbuild">jcefbuild</a>! thanks to user <a href="https://github.com/FriwiDev">@FriwiDev</a></h3>
   <hr/>
   
